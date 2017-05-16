@@ -1,5 +1,7 @@
 ---
-### Motivation
+# Job abstraction layer
+---
+## Motivation
 ---
 ## Before job abstraction layer
 * Create a new worker class
@@ -67,9 +69,10 @@
 ## Limitation
 
 * `.async` only supports ActiveModel objects or class static methods
+  since it is reinstantiated later inside `job.execute` method.
 * Method arguments must be serializable to database (string, number, hash, array etc.)
 ---
-### Additional features
+### Additional async options
 ---
 ## Caching options
 
