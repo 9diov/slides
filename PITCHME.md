@@ -1,8 +1,6 @@
 ---
 # Job abstraction layer
 ---
-## Motivation
----
 ## Why need jobs?
 
 * Executing query synchronously means the Rails web app hangs why the query is being executed
@@ -41,8 +39,6 @@
 ## Problems
 
 * Need to create a new worker class for new use case
-* Manually store the result in cache
-* Manually polling and retrieving data from cache
 * Sidekiq's advanced queue management is limited: no deduplication, no custom retry, no queue limit, etc.
 ---
 ## How about this?
@@ -119,7 +115,7 @@
 ---
 ## How do we send the jobs to Sidekiq?
 
-*  As soon as it is create - simplest but can't support per queue limit
+*  As soon as it is created - simplest but can't support per queue limit
 * Create a third coordinator that polls the jobs table and send it to Sidekiq - complex architecture
 * Currently used - when a job completes executation, it scan for the next queable job and send that to Sidekiq
 ---
