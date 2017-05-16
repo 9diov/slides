@@ -140,14 +140,14 @@
 
 ---
 ## How to solve all these issues?
+---
+## Using SKIP LOCKED, available since Postgres 9.5:
 
-* Using SKIP LOCKED, available since Postgres 9.5:
-
-    `select id from jobs`
-	`where tag = 'report' and status = 'created'`
-	`order by created_at`
-	`for update skip locked`
-	`limit 1`
+    select id from jobs
+	where tag = 'report' and status = 'created'
+	order by created_at
+	for update skip locked
+	limit 1
 
 * It 'skips' all the rows that are being locked, avoiding same job to be fetch by multiple workers
 
