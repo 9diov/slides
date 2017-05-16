@@ -49,7 +49,7 @@
 
     # Look, ma, no Worker class!
     def submit_query
-      job = @report.async.execute(user_id, params)
+      job = @report.async.execute(current_user.id, params)
       render_json_dump({job_id: job.id})
     end
 ---
