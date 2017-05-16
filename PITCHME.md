@@ -107,14 +107,15 @@
 ---
 ## How do we send the jobs to Sidekiq?
 
-*  As soon as it is create: Simplest but can't support per queue limit
-* Create a third coordinator that polls the jobs table and send it to Sidekiq: complex architecture
-* Currently used: When a job completes executation, it scan for the next queable job and send that to Sidekiq
+*  As soon as it is create - simplest but can't support per queue limit
+* Create a third coordinator that polls the jobs table and send it to Sidekiq - complex architecture
+* Currently used - when a job completes executation, it scan for the next queable job and send that to Sidekiq
 ---
 ## Naive strategy - can you spot the issue?
 
 	# When a report job finishes, get next queuable job
-	job = Job.where(tag: 'report', status: 'created').order(:created_at).limit(1)
+	job = Job.where(tag: 'report', status: 'created')
+		.order(:created_at).limit(1)
 
     job.update(status: 'queued')
     job.send_to_sidekiq
@@ -142,11 +143,11 @@
 
 * Using SKIP LOCKED, available since Postgres 9.5:
 
-    select id from jobs
-	where tag = 'report' and status = 'created'
-	order by created_at
-	for update skip locked
-	limit 1
+    `select id from jobs`
+	`where tag = 'report' and status = 'created'`
+	`order by created_at`
+	`for update skip locked`
+	`limit 1`
 
 * It 'skips' all the rows that are being locked, avoiding same job to be fetch by multiple workers
 
