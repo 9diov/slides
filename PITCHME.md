@@ -96,7 +96,7 @@
 
 * Job abstraction layer depend on Job class for queuing
 * Need to build a robust queuing mechanism on top of Postgres
---
+---
 ## Job life cycle
 
 * created
