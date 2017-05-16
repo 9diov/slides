@@ -34,9 +34,11 @@
 ---
 ## How about this?
 
-	job = report.async.do_something_cool(arg1, arg2)
-	result = job.fetch_cache_data
-	# Look, ma, no Worker class!
+    # Look, ma, no Worker class!
+    def submit_query
+      job = report.async.execute(user_id, params)
+      render_json_dump({job_id: job.id})
+    end
 ---
 ## After
 * No need to add Worker class each time we need to run an async job
@@ -46,10 +48,13 @@
 
     #returns an AsyncDelegator that stores async_options
     delegator = report.async(async_options)
+
     # Use `method_missing` to store the method name and arguments
     delegator.do_something_cool(arg1, arg2)
+
     # creates a new job with async_options,method name, method arguments, cache key, etc.
     job = delegator.new_job
+
     #internally calls JobWorker.perform_async(job_id)
     job.queue
 
