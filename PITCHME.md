@@ -3,11 +3,16 @@
 ---
 ## Motivation
 ---
-## Before job abstraction layer
-* Create a new worker class
-* Manually store the result in cache
-* Manually polling and retrieving data from cache
-* Custom code for each worker class when deduplication, retry is needed
+## Why need jobs?
+
+* Executing query synchronously means the Rails web app hangs why the query is being executed
+* Production has only 16 Unicorn workers per node, meaning it can only runs 16 queries at the same time
+---
+## Sidekiq
+
+* Most popular job processing framework for Ruby
+* Uses threads to handle multiple jobs at the same time
+* Uses Redis to store job metadata and as synchronization server
 ---
 ## Old async code
 
@@ -32,6 +37,13 @@
 	DataTranformWorker.perform_async(data_tranform_id, job.id)
 	DataImportWorker.perform_async(data_import_id, job.id)
 	BlahBlahWorker.perform_async
+---
+## Problems
+
+* Need to create a new worker class for new use case
+* Manually store the result in cache
+* Manually polling and retrieving data from cache
+* Sidekiq's advanced queue management is limited: no deduplication, no custom retry, no queue limit, etc.
 ---
 ## How about this?
 
@@ -150,6 +162,6 @@
 	for update skip locked
 	limit 1
 
-It 'skips' all the rows that are being locked, avoiding same job to be fetch by multiple workers
+It 'skips' all the rows that are being locked, avoiding same job to be fetched by multiple workers
 ---
 ## Question?
