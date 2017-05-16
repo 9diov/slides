@@ -36,7 +36,7 @@
 
     # Look, ma, no Worker class!
     def submit_query
-      job = report.async.execute(user_id, params)
+      job = @report.async.execute(user_id, params)
       render_json_dump({job_id: job.id})
     end
 ---
@@ -49,12 +49,13 @@
     #returns an AsyncDelegator that stores async_options
     delegator = report.async(async_options)
 
-    # Use `method_missing` to store the method name and arguments
+    # When a method is sent to the delegator
     delegator.do_something_cool(arg1, arg2)
 
-    # creates a new job with async_options,method name, method arguments, cache key, etc.
+    # Use 'method_missing' to store the method name and arguments,
+    # then creates a new job with async_options,method name, method arguments, cache key, etc.
     job = delegator.new_job
 
-    #internally calls JobWorker.perform_async(job_id)
+    # finally calls JobWorker.perform_async(job_id)
     job.queue
 
