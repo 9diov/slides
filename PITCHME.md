@@ -123,7 +123,8 @@
 ## Need lock to avoid double execution
 
 	# When a report job finishes, get next queuable job
-	job = Job.where(tag: 'report', status: 'created').order(:created_at).limit(1)
+	job = Job.where(tag: 'report', status: 'created')
+		.order(:created_at).limit(1)
 
 	# Lock that row in Ruby
 	job.with_lock do
