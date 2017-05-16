@@ -34,6 +34,10 @@
 ---
 ## How about this?
 
+	class QueryReport
+	  include Queueable
+	end
+
     # Look, ma, no Worker class!
     def submit_query
       job = @report.async.execute(user_id, params)
