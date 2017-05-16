@@ -149,5 +149,6 @@
 	for update skip locked
 	limit 1
 
-* It 'skips' all the rows that are being locked, avoiding same job to be fetch by multiple workers
-
+It 'skips' all the rows that are being locked, avoiding same job to be fetch by multiple workers
+---
+## Question?
