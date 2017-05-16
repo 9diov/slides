@@ -26,13 +26,12 @@
       render_json_dump({job_id: job.id})
     end
 ---
-## Examples
+## New worker for everything!
 
-	# New worker for everything!
-	QueryReportWorker.perform_async(1, 2, 3)
-	DataTranformWorker.perform_async(1, 2, 3)
-	DataImportWorker.perform_async(1, 2, 3)
-	BlahBlahWorker.perform_async(1, 2, 3)
+	QueryReportWorker.perform_async(report_id, job.id)
+	DataTranformWorker.perform_async(data_tranform_id, job.id)
+	DataImportWorker.perform_async(data_import_id, job.id)
+	BlahBlahWorker.perform_async
 ---
 ## How about this?
 
@@ -92,4 +91,62 @@
 ---
 ## Others
 * execute_inline (boolean): options that allow for the job to be executed inline (synchronously) instead of sending it to the background job layer. This is useful for case when you want to execute synchronous code but still want to have duplication detection, caching, etc. like an async job.
+---
+## Queuing system in Postgres
+
+* Job abstraction layer depend on Job class for queuing
+* Need to build a robust queuing mechanism on top of Postgres
+--
+## Job life cycle
+
+* created
+* queued (sent to Sidekiq)
+* running (being executed by Sidekiq)
+* successful (completes successfully)
+* failed (throw error during execution)
+---
+## How do we send the jobs to Sidekiq?
+
+*  As soon as it is create: Simplest but can't support per queue limit
+* Create a third coordinator that polls the jobs table and send it to Sidekiq: complex architecture
+* Currently used: When a job completes executation, it scan for the next queable job and send that to Sidekiq
+---
+## Naive strategy - can you spot the issue?
+
+	# When a report job finishes, get next queuable job
+	job = Job.where(tag: 'report', status: 'created').order(:created_at).limit(1)
+
+    job.update(status: 'queued')
+    job.send_to_sidekiq
+---
+## Need lock to avoid double execution
+
+	# When a report job finishes, get next queuable job
+	job = Job.where(tag: 'report', status: 'created').order(:created_at).limit(1)
+
+	# Lock that row in Ruby
+	job.with_lock do
+	  if job.status == 'created'
+        job.update(status: 'queued')
+        job.send_to_sidekiq
+	  end
+	end
+---
+## Still has issue?
+
+* One job can be fetched by multiple workers but only one can execute it next
+* Fetching multiple jobs instead causes other issues: job queued in random order, job exceeds queue limit, excessive locking time, etc.
+
+---
+## How to solve all these issues?
+
+* Using SKIP LOCKED, available since Postgres 9.5:
+
+    select id from jobs
+	where tag = 'report' and status = 'created'
+	order by created_at
+	for update skip locked
+	limit 1
+
+* It 'skips' all the rows that are being locked, avoiding same job to be fetch by multiple workers
 
