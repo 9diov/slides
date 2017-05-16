@@ -53,9 +53,36 @@
     delegator.do_something_cool(arg1, arg2)
 
     # Use 'method_missing' to store the method name and arguments,
-    # then creates a new job with async_options,method name, method arguments, cache key, etc.
+    # then creates a new job with async_options, method name,
+    # method arguments, cache key, etc.
     job = delegator.new_job
 
     # finally calls JobWorker.perform_async(job_id)
     job.queue
+---
+## Limitation
+
+* `.async` only supports ActiveModel objects or class static methods
+* Method arguments must be serializable to database (string, number, hash, array etc.)
+---
+### Additional features
+---
+## Caching options
+
+* cache_duration (in seconds): duration which the cache is kepts
+* cache_key: string that specifies the cache key for returned data
+* cache_method: name of method that is executed to generate the cache key, can't be used together with cache_keyoption
+---
+## Deduplication
+
+* merge_duplicate: job with the exact same source object id, execution method and params as another job within the last duplicate_duration will not be created. Instead, the older identical job will be returned.
+* duplicate_duration (in seconds): see merge_duplicate option. Default to 10*60 seconds or 10 minutes
+---
+## Custom queues
+
+* tag: tag used together with tenant level job limiting, can be either filter, report, or anything else which will be merged to default limit.
+* worker_options: options that will be passed over to the lower job execution layer, e.g. Sidekiq
+---
+## Others
+* execute_inline (boolean): options that allow for the job to be executed inline (synchronously) instead of sending it to the background job layer. This is useful for case when you want to execute synchronous code but still want to have duplication detection, caching, etc. like an async job.
 
