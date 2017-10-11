@@ -84,9 +84,10 @@ Scout shows that `/cats/<cat_id>/with_children.json` endpoint is:
 ### Eager loading
 
 Number of queries: 3
-* `select * from shared_filters where tenant_id = $1`
-* `select * from reports where id in ($1)`
-* `select * from dashboards where id in ($1)`
+
+    select * from shared_filters where tenant_id = $1
+    select * from reports where id in ($1)
+    select * from dashboards where id in ($1)
 ---
 ### Custom query with scopes
 
@@ -135,6 +136,44 @@ Number of queries: 1
 ---
 ### Hieriarchical query
 
-* 
+* Retrieve parents folder of a report
+* Retrieve descendants of a folder
+---
+### Example
+
+    class Category < ActiveRecord::Base
+      has_one :parent
+    end
+    
+    class Report < ActiveRecord::Base
+      has_one :category
+    end
+---
+### Normal implementation
+
+    def ancestors(report)
+      return [] unless report.category.present?
+      category = report.category
+      while category.present?
+        res << category
+        category = category.parent
+      end
+      res.reverse
+    end
+---
+### The recursive CTE way
+
+    with recursive tree as (
+      select R.parent_id as id, array[R.parent_id]::integer[] as path
+      from #{::ReportCategory.table_name} R
+      where id = #{@category_id}
+
+      union
+
+      select C.parent_id, tree.path || C.parent_id
+      from #{::ReportCategory.table_name} C
+      join tree on tree.id = C.id
+    ) select path from tree
+    where id = 0
 ---
 ## Question?
