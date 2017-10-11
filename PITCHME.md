@@ -1,30 +1,30 @@
 ---
-# Our Experience Optimizing A Rails + PostgreSQL App
+## Our Experience Optimizing A Rails + PostgreSQL App
 ---
-## Introduction
+### Introduction
 ---
-## Holistics
+### Holistics
 
 * Data analytics/BI platform
 * Rails/Sidekiq/PostgreSQL
 ---
-## Why PostgreSQL?
+### Why PostgreSQL?
 
 * Support of JSON
 ---
-## My web app is slow! Where to start?
+### My web app is slow! Where to start?
 ---
-## The journey of a thousand miles start with...
+### The journey of a thousand miles start with...
 ---
-## ...tracking
+### ...tracking
 ---
-## Things to track
+### Things to track
 * Rails log
 * Events log
 * Database log
 * Server log (CPU/memory/disk/network etc.)
 ---
-## Tools
+### Tools
 * ELK stack
 * Tracking provided by hosting services (AWS/DO/GCP/Azure...)
 * Graphite/Graphana
@@ -35,12 +35,12 @@
 ---
 ![Scout](static/scoutapp.png)
 ---
-## What is slow?
+### What is slow?
 ---
-## Folder structure navigation is very slow
+### Folder structure navigation is very slow
 ![Holistics](static/holistics_folders.png)
 ---
-## Summary statistics
+### Summary statistics
 * Mean: 250ms
 * Standard deviation: ~200ms
 * 95th percentile: ~1200ms
@@ -50,7 +50,7 @@ Scout shows that `/cats/<cat_id>/with_children.json` endpoint is:
 * sending out up to 200 of database queries per request
 * db queries responsible to 80% of request duration
 ---
-## Classic n + 1 problem
+### Classic n + 1 problem
 * Query to retrieve all folders under current one
 
     select * from categories where parent_id = $1
@@ -61,12 +61,12 @@ Scout shows that `/cats/<cat_id>/with_children.json` endpoint is:
     select * from events where user_id = $1
 * For each child folder, repeat the same process
 ---
-## How to solve n + 1 problem with ActiveRecord?
+### How to solve n + 1 problem with ActiveRecord?
 * bullet gem (https://github.com/flyerhzm/bullet)
 * Eager loading
 * Custom query using Arel
 ---
-## Example
+### Example
 
 	class SharedFilter < ActiveRecord::Base
       belongs_to :tenant
@@ -75,20 +75,20 @@ Scout shows that `/cats/<cat_id>/with_children.json` endpoint is:
 	  has_many :dashboards
 	end
 ---
-## Eager loading
+### Eager loading
 
 	SharedFilter
 	  .where(tenant_id: tenant_id)
 	  .include(:object_locks, :reports, :dashboards)
 ---
-## Eager loading
+### Eager loading
 
 Number of queries: 3
 * `select * from shared_filters where tenant_id = $1`
 * `select * from reports where id in ($1)`
 * `select * from dashboards where id in ($1)`
 ---
-## Custom query with scopes
+### Custom query with scopes
 
     SharedFilter
       .filter_tenant(tenant.id)
@@ -97,7 +97,7 @@ Number of queries: 3
       .include_report_count
       .include_dashboard_count
 ---
-## Scopes implementation
+### Scopes implementation
 
     def select_all
       select("#{self.table_name}.*").group("#{self.table_name}.id")
@@ -111,7 +111,7 @@ Number of queries: 3
       where("#{self.table_name}.is_adhoc = ?", bool)
     end
 ---
-## Scopes implementation (cont.)
+### Scopes implementation (cont.)
 
     def include_object_locks
       select('object_locks.id as object_lock_id')
@@ -129,11 +129,11 @@ Number of queries: 3
         .joins("LEFT JOIN filter_ownerships ND ON ND.shared_filter_id = shared_filters.id AND ND.filterable_type = 'Dashboard'")
     end
 ---
-## Scopes implementation
+### Scopes implementation
 
 Number of queries: 1
 ---
-## Hieriarchical query
+### Hieriarchical query
 
 * 
 ---
