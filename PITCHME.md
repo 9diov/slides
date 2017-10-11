@@ -37,6 +37,69 @@
 ## What is slow?
 ---
 ## Folder structure navigation is very slow
-![Holistics](static/holistics_folers.png)
+![Holistics](static/holistics_folders.png)
+---
+Scout shows that `/cats/<cat_id>/with_children.json` endpoint is:
+* sending out up to 200 of database queries per request
+* db queries responsible to 80% of request duration
+---
+## Classic n + 1 problem
+* Query to retrieve all folders under current one
+`select * from categories where parent_id = $1`
+* For each of them, retrieve permissions, users shared, last action, etc.
+---
+## How to solve n + 1 problem with ActiveRecord?
+* bullet gem (https://github.com/flyerhzm/bullet)
+* Eager loading
+* Custom query using Arel
+---
+## Eager loading
+`include(:)`
+---
+## Custom query with scopes
+
+    SharedFilter
+      .active
+      .filter_tenant(tenant.id)
+      .filter_adhoc(false)
+      .select_all
+      .include_object_locks
+      .include_report_count
+      .include_dashboard_count
+---
+## Scopes implementation
+
+	
+  class_methods do
+    def select_all
+      select("#{self.table_name}.*").group("#{self.table_name}.id")
+    end
+
+    def active
+      where('deleted_at IS NULL')
+    end
+
+    def filter_adhoc(bool)
+      where("#{self.table_name}.is_adhoc = ?", bool)
+    end
+---
+## Scopes implementation (cont.)
+
+    def include_object_locks
+      select('object_locks.id as object_lock_id')
+        .joins("LEFT JOIN object_locks ON #{self.table_name}.id = object_locks.subject_id AND object_locks.subject_class = '#{self.to_s}'")
+        .group('object_locks.id')
+    end
+
+    def include_report_count
+      select('count(NR.id) as report_count')
+        .joins("LEFT JOIN filter_ownerships NR ON NR.shared_filter_id = shared_filters.id AND NR.filterable_type = 'QueryReport'")
+    end
+
+    def include_dashboard_count
+      select('count(ND.id) as dashboard_count')
+        .joins("LEFT JOIN filter_ownerships ND ON ND.shared_filter_id = shared_filters.id AND ND.filterable_type = 'Dashboard'")
+    end
+  end
 ---
 ## Question?
