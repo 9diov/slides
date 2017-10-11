@@ -165,13 +165,13 @@ Number of queries: 1
 
     with recursive tree as (
       select R.parent_id as id, array[R.parent_id]::integer[] as path
-      from #{::ReportCategory.table_name} R
-      where id = #{@category_id}
+      from #{Category.table_name} R
+      where id = #{category_id}
 
       union
 
       select C.parent_id, tree.path || C.parent_id
-      from #{::ReportCategory.table_name} C
+      from #{Category.table_name} C
       join tree on tree.id = C.id
     ) select path from tree
     where id = 0
