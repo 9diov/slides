@@ -209,7 +209,14 @@ Commandline visualizer: https://github.com/simon-engledew/gocmdpev
 * Analayze: Update statistics on table for accurate query planning
 * Reduce one complex query from mean 2000ms -> 100ms
 ---
-Custom autovacuum/autoanalyze
+Custom autovacuum/autoanalyze frequency
+
+    ALTER TABLE <table> SET (autovacuum_vacuum_scale_factor = 0.0);
+    ALTER TABLE <table> SET (autovacuum_vacuum_threshold = 1000);
+    ALTER TABLE <table> SET (autovacuum_analyze_scale_factor = 0.0);
+    ALTER TABLE <table> SET (autovacuum_analyze_threshold = 1000);
+---
+Vacuum/analyze every (number of table rows * scale_factor + threshold) rows got inserted/updated/deleted
 ---
 ### Rewrite queries
 * Move filtering inside CTE
@@ -231,7 +238,6 @@ Remember to set algorithm: concurrently
         execute 'CREATE INDEX users_on_lower_email ON users(LOWER(email))'
       end
     end
-end
 ---
 ### Partial index
 
@@ -252,8 +258,10 @@ end
 * Reduce search time ~20ms -> ~1ms
 ---
 
+    # Query
     select title from query_reports where title ILIKE '%some%text%'
 
+    # Adding index
     class AddGinIndexToReportsTitle < ActiveRecord::Migration
       def up
         execute 'create extension if not exists pg_trgm'
@@ -272,7 +280,5 @@ Unused indexex: https://gist.github.com/9diov/fa9c7f41b92f8e8c528ff9184a2b4e15
 ---
 Index suggestion: https://gist.github.com/9diov/6174289564ba4ee0f296974ca3638024
 ![Index suggestion](static/index_suggestion.png)
----
-## Postgres performance monitoring
 ---
 ## Question?
