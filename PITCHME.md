@@ -3,30 +3,35 @@
 ---
 ### Agenda
 * Introduction
-    * Holistics
-    * Holistics stack
 * The process
-    * Performance monitoring
-    * Debugging slow queries
-    * Fixing
-* Problems and solutions
-    * Slow hieriarchical query
-    * N + 1 problem
-    * Slow query on huge table
-    * Slow search
+* Our problems and how we fixed them
 * Other tips
-    * Vacuum/analyze
-    * Expresion/partial indexes
-    * Useful queries
 ---
-### Introduction
+### Part 1: Introduction
+* Holistics
+* Holistics stack
 ---
 ### Holistics
 
 * Data analytics/BI platform
-* Stack: Rails/Sidekiq/PostgreSQL/Redis
 ---
-### My web app is slow! Where to start?
+### Stack
+* Backend: Rails/Sidekiq/PostgreSQL/Redis
+* Frontend: VueJS/Yarn/Webpack
+---
+### End of part 1
+---
+### Part 2: The process
+* Performance monitoring
+* Debugging slow queries
+* Fix the issue:
+    * Database maintenance
+    * Rewrite queries
+    * Adding indexex
+---
+### How do I know something is slow?
+* Reported by angry customers (bad)
+* Alerts from monitoring tools (good)
 ---
 ### The journey of a thousand miles start with...
 ---
@@ -48,9 +53,10 @@
 ---
 ![Scout](static/scoutapp.png)
 ---
-### What is slow?
-* Reported by customers
-* Alerts from monitoring tools
+### How to interpret the results
+* Generate summary statistics
+* Propose hypothesis
+* Validate hypothesis
 ---
 ### Summary statistics
 * Mean: 250ms
@@ -59,105 +65,36 @@
 * 99th percentile: ~18000ms
 ---?image=static/summary_statistics.gif&size=auto 90%
 ---
+### Debugging query performance
+---
+### EXPLAIN ANALYZE
+![query_plan](static/query_plan.png)
+---
+Postgres Explain Visualizer: http://tatiyants.com/pev/
+
+![PEV](static/pev_plan.png)
+---
+Commandline visualizer: https://github.com/simon-engledew/gocmdpev
+
+![cmdpev](static/gocmdpev.png)
+---
+### End of part 2
+---
+### Part 3: Our problems and how we fixed them
+* Slow hieriarchical query
+* N + 1 problem
+* Slow query on huge table
+* Slow search
+---
 ### Folder structure navigation is very slow
 ![Holistics](static/holistics_folders.png)
+---
+Problem: Buidling folder structure with permission checking is very slow
+Root cause hypothesis: n + 1 problem related to hieriarchical query
 ---
 Scout shows that `/cats/<cat_id>/children.json` endpoint is:
 * sending out ~200 of database queries per request
 * db queries responsible to 80% of request duration
----
-### Root causes
-* Classic n + 1 problem
-* Slow hieriarchical query
----
-### Classic n + 1 problem
-Query to retrieve all folders under current one
-
-    select * from folders where parent_id = $1
-
-For each of them, retrieve permissions, users shared, last action, etc:
-
-    select * from permissions where folder_id = $1
-    select * from users where permission_id = $1
-    select * from events where user_id = $1
-
-For each child folder, repeat the same process
----
-### How to detect/solve n + 1 problem with ActiveRecord?
-* Detection: bullet gem (https://github.com/flyerhzm/bullet)
-* Eager loading
-* Custom query using Arel
----
-### Example
-
-	class SharedFilter < ActiveRecord::Base
-      belongs_to :tenant
-	  has_one :object_lock
-	  has_many :reports
-	  has_many :dashboards
-	end
----
-### Eager loading
-
-	SharedFilter
-	  .where(tenant_id: tenant_id)
-	  .include(:object_locks, :reports, :dashboards)
----
-### Eager loading
-
-Number of queries: 4
-
-    select * from shared_filters where tenant_id = $1
-    select * from object_locks where filter_id = $1
-    select * from reports where id in ($1)
-    select * from dashboards where id in ($1)
----
-### Custom query with scopes
-
-    SharedFilter
-      .filter_tenant(tenant.id)
-      .select_all
-      .include_object_locks
-      .include_report_count
-      .include_dashboard_count
----
-### Scopes implementation
-
-    def select_all
-      select("#{self.table_name}.*").group("#{self.table_name}.id")
-    end
-  
-    def active
-      where('deleted_at IS NULL')
-    end
-  
-    def filter_adhoc(bool)
-      where("#{self.table_name}.is_adhoc = ?", bool)
-    end
----
-### Scopes implementation (cont.)
-
-    def include_object_locks
-      select('object_locks.id as object_lock_id')
-        .joins("LEFT JOIN object_locks ON #{self.table_name}.id = object_locks.subject_id AND object_locks.subject_class = '#{self.to_s}'")
-        .group('object_locks.id')
-    end
-
-    def include_report_count
-      select('count(NR.id) as report_count')
-        .joins("LEFT JOIN filter_ownerships NR ON NR.shared_filter_id = shared_filters.id AND NR.filterable_type = 'QueryReport'")
-    end
-
-    def include_dashboard_count
-      select('count(ND.id) as dashboard_count')
-        .joins("LEFT JOIN filter_ownerships ND ON ND.shared_filter_id = shared_filters.id AND ND.filterable_type = 'Dashboard'")
-    end
----
-### Scopes implementation
-
-Number of queries: 1
-
-Careful with SQL injection though
 ---
 ### Slow hieriarchical query
 
@@ -201,30 +138,93 @@ Careful with SQL injection though
     ) select path from tree
     where id = 0
 ---
-### My query is still slow. Now what?
+### Problem: Slow generating list of models
 ---
-### Debugging query performance
+### Classic n + 1 problem
+Query to retrieve all shared filters with extra information:
+* Is the filter locked?
+* How many reports/dashboards contain the filter
 ---
-### EXPLAIN ANALYZE
-![query_plan](static/query_plan.png)
+### How to detect/solve n + 1 problem with ActiveRecord?
+* Detection: bullet gem (https://github.com/flyerhzm/bullet)
+* Eager loading
+* Custom query using Arel
 ---
-Postgres Explain Visualizer: http://tatiyants.com/pev/
+### Model
 
-![PEV](static/pev_plan.png)
+	class SharedFilter < ActiveRecord::Base
+      belongs_to :tenant
+	  has_one :object_lock
+	  has_many :reports
+	  has_many :dashboards
+	end
 ---
-Commandline visualizer: https://github.com/simon-engledew/gocmdpev
+### Eager loading
 
-![cmdpev](static/gocmdpev.png)
+	SharedFilter
+	  .where(tenant_id: tenant_id)
+	  .include(:object_locks, :reports, :dashboards)
 ---
-### Fixing performance
-* Run vacuum/analyze on slow tables
-* Rewrite queries
-* Adding indexes
+### Eager loading
+
+Number of queries: 4
+
+    select * from shared_filters where tenant_id = $1
+    select * from object_locks where filter_id = $1
+    select * from reports where id in ($1)
+    select * from dashboards where id in ($1)
+---
+### Custom query with scopes
+
+    SharedFilter
+      .filter_tenant(tenant.id)
+      .select_all
+      .include_object_locks
+      .include_report_count
+      .include_dashboard_count
+---
+### Scopes implementation
+
+    def select_all
+      select("#{self.table_name}.*").group("#{self.table_name}.id")
+    end
+  
+    def filter_adhoc(bool)
+      where("#{self.table_name}.is_adhoc = ?", bool)
+    end
+---
+### Scopes implementation (cont.)
+
+    def include_object_locks
+      select('object_locks.id as object_lock_id')
+        .joins("LEFT JOIN object_locks ON #{self.table_name}.id = object_locks.subject_id AND object_locks.subject_class = '#{self.to_s}'")
+        .group('object_locks.id')
+    end
+
+    def include_report_count
+      select('count(NR.id) as report_count')
+        .joins("LEFT JOIN filter_ownerships NR ON NR.shared_filter_id = shared_filters.id AND NR.filterable_type = 'QueryReport'")
+    end
+
+    def include_dashboard_count
+      select('count(ND.id) as dashboard_count')
+        .joins("LEFT JOIN filter_ownerships ND ON ND.shared_filter_id = shared_filters.id AND ND.filterable_type = 'Dashboard'")
+    end
+---
+### Scopes implementation
+
+Number of queries: 1
+
+Careful with SQL injection though
+---
+### Slow query on huge table
+Problem: Complex job queuing query takes more than 1 second to run
+Root cause hypothesis: lack of proper database maintenance
 ---
 ### Vacuum/analyze
 * Vacuum: clean up dead rows from disk
 * Analayze: Update statistics on table for accurate query planning
-* Reduce one complex query from mean 2000ms -> 100ms
+* Reduce query time from mean 2000ms -> 100ms
 ---
 Custom autovacuum/autoanalyze frequency
 
@@ -238,6 +238,41 @@ Vacuum/analyze every time
 `(number of table rows * scale_factor + threshold)` rows
 
 got inserted/updated/deleted
+---
+### Slow search
+Root cause: Lack of index on the relevant column
+---
+### Trigram index
+* Speed up LIKE/ILIKE query
+* Example: https://about.gitlab.com/2016/03/18/fast-search-using-postgresql-trigram-indexes/
+* Reduce search time ~20ms -> ~1ms
+---
+### Trigram index
+
+    # Query
+    select title from query_reports where title ILIKE '%some%text%'
+
+    # Adding index
+    class AddGinIndexToReportsTitle < ActiveRecord::Migration
+      def up
+        execute 'create extension if not exists pg_trgm'
+        execute 'CREATE INDEX IF NOT EXISTS' +
+        'index_query_reports_on_title_trigram' +
+        'ON query_reports USING gin (title gin_trgm_ops);'
+      end
+    end
+---
+### My query is still slow. Now what?
+---
+### Fixing performance
+* Run vacuum/analyze on slow tables
+* Rewrite queries
+* Adding indexes
+---
+### Other tips
+* Vacuum/analyze
+* Expresion/partial indexes
+* Useful queries
 ---
 ### Rewrite queries
 * Only retrieve necessary rows, use `pluck` whenever possible
@@ -274,26 +309,6 @@ Remember to set algorithm: concurrently
 
     CREATE INDEX event_signups ON event (time)
     WHERE (data->>'type') = 'submit' AND (data->>'path') = '/signup/'
----
-### Trigram index
-* Speed up LIKE/ILIKE query
-* Example: https://about.gitlab.com/2016/03/18/fast-search-using-postgresql-trigram-indexes/
-* Reduce search time ~20ms -> ~1ms
----
-### Trigram index
-
-    # Query
-    select title from query_reports where title ILIKE '%some%text%'
-
-    # Adding index
-    class AddGinIndexToReportsTitle < ActiveRecord::Migration
-      def up
-        execute 'create extension if not exists pg_trgm'
-        execute 'CREATE INDEX IF NOT EXISTS' +
-        'index_query_reports_on_title_trigram' +
-        'ON query_reports USING gin (title gin_trgm_ops);'
-      end
-    end
 ---
 ### Index tradeoff
 * Extra time to do INSERT/UPDATE/DELETE
