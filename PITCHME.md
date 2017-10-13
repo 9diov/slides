@@ -51,9 +51,10 @@
 ---
 ![Scout](static/scoutapp.png)
 ---
-### How to interpret the results
+### How to use the results
 * Generate summary statistics
-* Propose hypothesis
+* Identify the bottlenecks
+* Propose root cause hypothesis
 * Validate hypothesis
 ---
 ### Summary statistics
