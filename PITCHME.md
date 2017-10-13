@@ -36,15 +36,17 @@
 ![Scout](static/scoutapp.png)
 ---
 ### What is slow?
----
-### Folder structure navigation is very slow
-![Holistics](static/holistics_folders.png)
+* Reported by customers
+* Alerts from monitoring tools
 ---
 ### Summary statistics
 * Mean: 250ms
 * Standard deviation: ~200ms
 * 95th percentile: ~1200ms
 * 99th percentile: ~18000ms
+---
+### Folder structure navigation is very slow
+![Holistics](static/holistics_folders.png)
 ---
 Scout shows that `/cats/<cat_id>/with_children.json` endpoint is:
 * sending out up to 200 of database queries per request
@@ -175,5 +177,53 @@ Number of queries: 1
       join tree on tree.id = C.id
     ) select path from tree
     where id = 0
+---
+### My query is still slow. Now what?
+---
+### Debugging query performance
+---
+### EXPLAIN ANALYZE
+Use Postgres Explain Visualizer: http://tatiyants.com/pev/
+
+![PEV](static/pev_plan.png)
+---
+Commandline visualizer: https://github.com/simon-engledew/gocmdpev
+
+![cmdpev](static/gocmdpev.png)
+---
+### Adding indexes
+* Remember to set algorithm: concurrently
+
+    add_index :users, :tenant_id, algorithm: :concurrently
+---
+### Partial index
+---
+### Trigram index
+* Speed up LIKE/ILIKE query
+* Example: https://about.gitlab.com/2016/03/18/fast-search-using-postgresql-trigram-indexes/
+* Reduce search time ~20ms -> ~1ms
+---
+	class AddGinIndexToReportsTitle < ActiveRecord::Migration[5.0]
+	  def up
+		execute 'create extension if not exists pg_trgm'
+		execute 'CREATE INDEX IF NOT EXISTS index_query_reports_on_title_trigram ON query_reports USING gin (title gin_trgm_ops);'
+	  end
+
+	  def down
+		execute 'DROP INDEX index_query_reports_on_title_trigram'
+	  end
+	end
+---
+### Index tradeoff
+* Extra time to do INSERT/UPDATE/DELETE
+* Extra disk space needed
+---
+### Useful queries
+---
+Unused indexex: https://gist.github.com/9diov/fa9c7f41b92f8e8c528ff9184a2b4e15
+![unused_index](static/unused_index.png)
+---
+Index suggestion: https://gist.github.com/9diov/6174289564ba4ee0f296974ca3638024
+![Index suggestion](static/index_suggestion.png)
 ---
 ## Question?
