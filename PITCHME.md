@@ -11,6 +11,8 @@
 ### Why PostgreSQL?
 
 * Support of JSON
+* Support of CTE
+* Advanced index types
 ---
 ### My web app is slow! Where to start?
 ---
@@ -44,7 +46,6 @@
 * Standard deviation: ~200ms
 * 95th percentile: ~1200ms
 * 99th percentile: ~18000ms
----
 ---?image=static/summary_statistics.gif&size=auto 90%
 ---
 ### Folder structure navigation is very slow
@@ -197,32 +198,69 @@ Commandline visualizer: https://github.com/simon-engledew/gocmdpev
 ![cmdpev](static/gocmdpev.png)
 ---
 ### Fixing performance
+* Run vacuum/analyze on slow tables
 * Rewrite queries
 * Adding indexes
+---
+### Vacuum/analyze
+* Vacuum: clean up dead rows from disk
+* Analayze: Update statistics on table for accurate query planning
+* Reduce one complex query from mean 2000ms -> 100ms
+---
+Custom autovacuum/autoanalyze
+---
+### Rewrite queries
+* Move filtering inside CTE
+* Avoid SELECT DISTINCT on whole table
 ---
 ### Adding indexes
 Remember to set algorithm: concurrently
 
     add_index :users, :tenant_id, algorithm: :concurrently
 ---
+### Expression index
+
+    # Query
+    User.where("LOWER(email) = LOWER(?)", params[:email])
+
+    # Adding index
+    class IndexUsersOnLowerEmail < ActiveRecord::Migration
+      def up
+        execute 'CREATE INDEX users_on_lower_email ON users(LOWER(email))'
+      end
+    end
+end
+---
 ### Partial index
+
+    SELECT COUNT(*)
+    FROM event
+    WHERE
+      (data->>'type') = 'submit' AND
+      (data->>'path') = '/signup/' AND
+    time BETWEEN 1409554800000 AND 1410159600000
+---
+
+    CREATE INDEX event_signups ON event (time)
+    WHERE (data->>'type') = 'submit' AND (data->>'path') = '/signup/'
 ---
 ### Trigram index
 * Speed up LIKE/ILIKE query
 * Example: https://about.gitlab.com/2016/03/18/fast-search-using-postgresql-trigram-indexes/
 * Reduce search time ~20ms -> ~1ms
 ---
+    select title from query_reports where title ILIKE '%some%text%'
 
-	class AddGinIndexToReportsTitle < ActiveRecord::Migration[5.0]
-	  def up
-		execute 'create extension if not exists pg_trgm'
-		execute 'CREATE INDEX IF NOT EXISTS index_query_reports_on_title_trigram ON query_reports USING gin (title gin_trgm_ops);'
-	  end
+    class AddGinIndexToReportsTitle < ActiveRecord::Migration[5.0]
+      def up
+        execute 'create extension if not exists pg_trgm'
+        execute 'CREATE INDEX IF NOT EXISTS index_query_reports_on_title_trigram ON query_reports USING gin (title gin_trgm_ops);'
+      end
 
-	  def down
-		execute 'DROP INDEX index_query_reports_on_title_trigram'
-	  end
-	end
+      def down
+        execute 'DROP INDEX index_query_reports_on_title_trigram'
+      end
+    end
 ---
 ### Index tradeoff
 * Extra time to do INSERT/UPDATE/DELETE
@@ -235,5 +273,7 @@ Unused indexex: https://gist.github.com/9diov/fa9c7f41b92f8e8c528ff9184a2b4e15
 ---
 Index suggestion: https://gist.github.com/9diov/6174289564ba4ee0f296974ca3638024
 ![Index suggestion](static/index_suggestion.png)
+---
+## Postgres performance monitoring
 ---
 ## Question?
