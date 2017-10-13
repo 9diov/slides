@@ -1,5 +1,5 @@
 ---
-## Our Experience Optimizing A Rails + PostgreSQL App
+## How to optimize a Rails + PostgreSQL App
 ---
 ### Introduction
 ---
@@ -13,6 +13,7 @@
 * Support of JSON
 * Support of CTE
 * Advanced index types
+* Support of window functions
 ---
 ### My web app is slow! Where to start?
 ---
@@ -141,6 +142,7 @@ Number of queries: 4
 ### Scopes implementation
 
 Number of queries: 1
+Careful with SQL injection though
 ---
 ### Hieriarchical query
 
@@ -216,9 +218,12 @@ Custom autovacuum/autoanalyze frequency
     ALTER TABLE <table> SET (autovacuum_analyze_scale_factor = 0.0);
     ALTER TABLE <table> SET (autovacuum_analyze_threshold = 1000);
 ---
-Vacuum/analyze every (number of table rows * scale_factor + threshold) rows got inserted/updated/deleted
+Vacuum/analyze every time
+`(number of table rows * scale_factor + threshold)` rows got inserted/updated/deleted
 ---
 ### Rewrite queries
+* Only retrieve necessary rows, use `pluck` whenever possible
+* Use appropriate JOIN type (LEFT/INNER/RIGHT)
 * Move filtering inside CTE
 * Avoid SELECT DISTINCT on whole table
 ---
@@ -265,8 +270,9 @@ Remember to set algorithm: concurrently
     class AddGinIndexToReportsTitle < ActiveRecord::Migration
       def up
         execute 'create extension if not exists pg_trgm'
-        execute 'CREATE INDEX IF NOT EXISTS index_query_reports_on_title_trigram\
-        ON query_reports USING gin (title gin_trgm_ops);'
+        execute 'CREATE INDEX IF NOT EXISTS' +
+        'index_query_reports_on_title_trigram' +
+        'ON query_reports USING gin (title gin_trgm_ops);'
       end
     end
 ---
@@ -276,10 +282,16 @@ Remember to set algorithm: concurrently
 ---
 ### Useful queries
 ---
-Unused indexex: https://gist.github.com/9diov/fa9c7f41b92f8e8c528ff9184a2b4e15
+Unused indexes: https://gist.github.com/9diov/fa9c7f41b92f8e8c528ff9184a2b4e15
 ![unused_index](static/unused_index.png)
 ---
 Index suggestion: https://gist.github.com/9diov/6174289564ba4ee0f296974ca3638024
 ![Index suggestion](static/index_suggestion.png)
+---
+## Conclusion
+* Monitoring is essential
+* Avoid n + 1 issue
+* Find the bottleneck
+* Use the index, Luke!
 ---
 ## Question?
