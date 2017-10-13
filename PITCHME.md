@@ -189,7 +189,9 @@ Number of queries: 1
 ### Debugging query performance
 ---
 ### EXPLAIN ANALYZE
-Use Postgres Explain Visualizer: http://tatiyants.com/pev/
+![query_plan](static/query_plan.png)
+---
+Postgres Explain Visualizer: http://tatiyants.com/pev/
 
 ![PEV](static/pev_plan.png)
 ---
@@ -249,6 +251,7 @@ end
 * Example: https://about.gitlab.com/2016/03/18/fast-search-using-postgresql-trigram-indexes/
 * Reduce search time ~20ms -> ~1ms
 ---
+
     select title from query_reports where title ILIKE '%some%text%'
 
     class AddGinIndexToReportsTitle < ActiveRecord::Migration[5.0]
