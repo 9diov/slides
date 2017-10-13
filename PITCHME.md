@@ -86,10 +86,11 @@ Commandline visualizer: https://github.com/simon-engledew/gocmdpev
 * Slow query on huge table
 * Slow search
 ---
-### Folder structure navigation is very slow
+### Problem 1: Folder structure navigation is very slow
 ![Holistics](static/holistics_folders.png)
 ---
 Problem: Buidling folder structure with permission checking is very slow
+
 Root cause hypothesis: n + 1 problem related to hieriarchical query
 ---
 Scout shows that `/cats/<cat_id>/children.json` endpoint is:
@@ -101,7 +102,7 @@ Scout shows that `/cats/<cat_id>/children.json` endpoint is:
 * Retrieve ancestor folders of a report
 * Retrieve descendants of a folder
 ---
-### Example
+### Code
 
     class Folder < ActiveRecord::Base
       has_one :parent
@@ -111,7 +112,7 @@ Scout shows that `/cats/<cat_id>/children.json` endpoint is:
       has_one :parent_folder
     end
 ---
-### Normal implementation
+### Old implementation
 
     def ancestors(report)
       return [] unless report.folder.present?
@@ -138,7 +139,7 @@ Scout shows that `/cats/<cat_id>/children.json` endpoint is:
     ) select path from tree
     where id = 0
 ---
-### Problem: Slow generating list of models
+### Problem 2: Slow generating list of models
 ---
 ### Classic n + 1 problem
 Query to retrieve all shared filters with extra information:
@@ -217,14 +218,25 @@ Number of queries: 1
 
 Careful with SQL injection though
 ---
-### Slow query on huge table
+### Problem 3: Slow query on huge table
 Problem: Complex job queuing query takes more than 1 second to run
+
+Root cause hypothesis: The query is not optimized
+---
+### Rewriting queries
+* Use appropriate JOIN type (LEFT/INNER/RIGHT)
+* Move filtering inside CTE
+* Avoid SELECT DISTINCT on whole table
+---
+### Results: wrong!
+
+Performance did improve, but not by much
+---
 Root cause hypothesis: lack of proper database maintenance
 ---
 ### Vacuum/analyze
 * Vacuum: clean up dead rows from disk
 * Analayze: Update statistics on table for accurate query planning
-* Reduce query time from mean 2000ms -> 100ms
 ---
 Custom autovacuum/autoanalyze frequency
 
@@ -239,13 +251,18 @@ Vacuum/analyze every time
 
 got inserted/updated/deleted
 ---
-### Slow search
-Root cause: Lack of index on the relevant column
+# Results
+Reduce query time from mean 2000ms -> 150ms
+---
+### Problem 4: Search is slow
+Problem: Search takes a long time to load
+
+Root cause hypothesis: Lack of index on the relevant column
 ---
 ### Trigram index
 * Speed up LIKE/ILIKE query
 * Example: https://about.gitlab.com/2016/03/18/fast-search-using-postgresql-trigram-indexes/
-* Reduce search time ~20ms -> ~1ms
+* Reduce search time ~200ms -> ~1ms
 ---
 ### Trigram index
 
@@ -262,23 +279,11 @@ Root cause: Lack of index on the relevant column
       end
     end
 ---
-### My query is still slow. Now what?
+### End of part 3
 ---
-### Fixing performance
-* Run vacuum/analyze on slow tables
-* Rewrite queries
-* Adding indexes
----
-### Other tips
-* Vacuum/analyze
+### Part 4: Other tips
 * Expresion/partial indexes
 * Useful queries
----
-### Rewrite queries
-* Only retrieve necessary rows, use `pluck` whenever possible
-* Use appropriate JOIN type (LEFT/INNER/RIGHT)
-* Move filtering inside CTE
-* Avoid SELECT DISTINCT on whole table
 ---
 ### Adding indexes
 Remember to set algorithm: concurrently
@@ -325,7 +330,7 @@ Index suggestion: https://gist.github.com/9diov/6174289564ba4ee0f296974ca3638024
 ## Conclusion
 * Monitoring is essential
 * Avoid n + 1 issue
-* Find the bottleneck
+* Maintain your database
 * Use the index, Luke!
 ---
 ## Question?
