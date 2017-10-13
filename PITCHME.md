@@ -1,12 +1,12 @@
 ---
-## How to optimize a Rails + PostgreSQL App
+## Optimizing a Rails + PostgreSQL App
 ---
 ### Introduction
 ---
 ### Holistics
 
 * Data analytics/BI platform
-* Rails/Sidekiq/PostgreSQL
+* Stack: Rails/Sidekiq/PostgreSQL/Redis
 ---
 ### Why PostgreSQL?
 
@@ -55,6 +55,10 @@
 Scout shows that `/cats/<cat_id>/children.json` endpoint is:
 * sending out ~200 of database queries per request
 * db queries responsible to 80% of request duration
+---
+### Root causes
+* Classic n + 1 problem
+* Slow hieriarchical query
 ---
 ### Classic n + 1 problem
 Query to retrieve all folders under current one
@@ -142,9 +146,10 @@ Number of queries: 4
 ### Scopes implementation
 
 Number of queries: 1
+
 Careful with SQL injection though
 ---
-### Hieriarchical query
+### Slow hieriarchical query
 
 * Retrieve ancestor folders of a report
 * Retrieve descendants of a folder
@@ -219,7 +224,10 @@ Custom autovacuum/autoanalyze frequency
     ALTER TABLE <table> SET (autovacuum_analyze_threshold = 1000);
 ---
 Vacuum/analyze every time
-`(number of table rows * scale_factor + threshold)` rows got inserted/updated/deleted
+
+`(number of table rows * scale_factor + threshold)` rows
+
+got inserted/updated/deleted
 ---
 ### Rewrite queries
 * Only retrieve necessary rows, use `pluck` whenever possible
@@ -262,6 +270,7 @@ Remember to set algorithm: concurrently
 * Example: https://about.gitlab.com/2016/03/18/fast-search-using-postgresql-trigram-indexes/
 * Reduce search time ~20ms -> ~1ms
 ---
+### Trigram index
 
     # Query
     select title from query_reports where title ILIKE '%some%text%'
