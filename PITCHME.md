@@ -23,11 +23,9 @@
 ---
 ### Part 2: The process
 * Performance monitoring
+* Identify slow queries
 * Debugging slow queries
-* Fix the issue:
-    * Database maintenance
-    * Rewrite queries
-    * Adding indexex
+* Fix the issue
 ---
 ### How do I know something is slow?
 * Reported by angry customers (bad)
@@ -78,7 +76,14 @@ Commandline visualizer: https://github.com/simon-engledew/gocmdpev
 
 ![cmdpev](static/gocmdpev.png)
 ---
-### End of part 2
+### Fix the issue
+* Database maintenance
+* Rewrite queries
+* Adding indexes
+---
+### End of part 2 conclusion
+* Use tracking/monitoring tools
+* Don't assume, propose and validate your hypothesis
 ---
 ### Part 3: Our problems and how we fixed them
 * Slow hieriarchical query
@@ -279,7 +284,12 @@ Root cause hypothesis: Lack of index on the relevant column
       end
     end
 ---
-### End of part 3
+### End of part 3 conclusion
+We solved the following issues:
+* Slow hieriarchical query
+* N + 1 problem
+* Slow query on huge table
+* Slow search
 ---
 ### Part 4: Other tips
 * Expresion/partial indexes
@@ -329,6 +339,7 @@ Index suggestion: https://gist.github.com/9diov/6174289564ba4ee0f296974ca3638024
 ---
 ## Conclusion
 * Monitoring is essential
+* Validate your hypothesis
 * Avoid n + 1 issue
 * Maintain your database
 * Use the index, Luke!
