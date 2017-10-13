@@ -74,19 +74,6 @@
 * Check the logs
 * Fix and benchmark on big enough sample size
 ---
-### Debugging query performance
----
-### EXPLAIN ANALYZE
-![query_plan](static/query_plan.png)
----
-Postgres Explain Visualizer: http://tatiyants.com/pev/
-
-![PEV](static/pev_plan.png)
----
-Commandline visualizer: https://github.com/simon-engledew/gocmdpev
-
-![cmdpev](static/gocmdpev.png)
----
 ### Fix the issue
 * Database maintenance
 * Rewrite queries
@@ -238,6 +225,19 @@ Careful with SQL injection though
 Problem: Complex job queuing query takes more than 1 second to run
 
 Root cause hypothesis: The query is not optimized
+---
+### Debugging query performance
+---
+### EXPLAIN ANALYZE
+![query_plan](static/query_plan.png)
+---
+Postgres Explain Visualizer: http://tatiyants.com/pev/
+
+![PEV](static/pev_plan.png)
+---
+Commandline visualizer: https://github.com/simon-engledew/gocmdpev
+
+![cmdpev](static/gocmdpev.png)
 ---
 ### Rewriting queries
 * Use appropriate JOIN type (LEFT/INNER/RIGHT)
