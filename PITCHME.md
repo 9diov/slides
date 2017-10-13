@@ -1,19 +1,30 @@
 ---
 ## Optimizing a Rails + PostgreSQL App
 ---
+### Agenda
+* Introduction
+    * Holistics
+    * Holistics stack
+* The process
+    * Performance monitoring
+    * Debugging slow queries
+    * Fixing
+* Problems and solutions
+    * Slow hieriarchical query
+    * N + 1 problem
+    * Slow query on huge table
+    * Slow search
+* Other tips
+    * Vacuum/analyze
+    * Expresion/partial indexes
+    * Useful queries
+---
 ### Introduction
 ---
 ### Holistics
 
 * Data analytics/BI platform
 * Stack: Rails/Sidekiq/PostgreSQL/Redis
----
-### Why PostgreSQL?
-
-* Support of JSON
-* Support of CTE
-* Advanced index types
-* Support of window functions
 ---
 ### My web app is slow! Where to start?
 ---
@@ -30,9 +41,8 @@
 ### Tools
 * ELK stack
 * Tracking provided by hosting services (AWS/DO/GCP/Azure...)
-* Graphite/Graphana
-* Commercials: New Relic/DataDog/Scout/etc.
-* Query visualization tools: Holistics
+* Commercials: Scout
+* Query visualization/alerting tools: Holistics
 ---
 ![Kibana](static/kibana.png)
 ---
