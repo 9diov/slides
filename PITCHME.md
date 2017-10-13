@@ -254,14 +254,10 @@ end
 
     select title from query_reports where title ILIKE '%some%text%'
 
-    class AddGinIndexToReportsTitle < ActiveRecord::Migration[5.0]
+    class AddGinIndexToReportsTitle < ActiveRecord::Migration
       def up
         execute 'create extension if not exists pg_trgm'
         execute 'CREATE INDEX IF NOT EXISTS index_query_reports_on_title_trigram ON query_reports USING gin (title gin_trgm_ops);'
-      end
-
-      def down
-        execute 'DROP INDEX index_query_reports_on_title_trigram'
       end
     end
 ---
