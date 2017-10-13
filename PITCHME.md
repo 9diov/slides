@@ -63,6 +63,16 @@
 * 99th percentile: ~18000ms
 ---?image=static/summary_statistics.gif&size=auto 90%
 ---
+### Proprosing hypothesis
+* n + 1 problem
+* Inefficient queries
+* Lack of indexes
+* Lack of database maintenance
+---
+### Validating hypothesis
+* Check the logs
+* Fix and benchmark on big enough sample size
+---
 ### Debugging query performance
 ---
 ### EXPLAIN ANALYZE
