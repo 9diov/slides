@@ -45,26 +45,30 @@
 * 95th percentile: ~1200ms
 * 99th percentile: ~18000ms
 ---
+---?image=static/summary_statistics.gif&size=auto 90%
+---
 ### Folder structure navigation is very slow
 ![Holistics](static/holistics_folders.png)
 ---
-Scout shows that `/cats/<cat_id>/with_children.json` endpoint is:
-* sending out up to 200 of database queries per request
+Scout shows that `/cats/<cat_id>/children.json` endpoint is:
+* sending out ~200 of database queries per request
 * db queries responsible to 80% of request duration
 ---
 ### Classic n + 1 problem
-* Query to retrieve all folders under current one
+Query to retrieve all folders under current one
 
-    select * from categories where parent_id = $1
-* For each of them, retrieve permissions, users shared, last action, etc:
+    select * from folders where parent_id = $1
 
-    select * from permissions where source_id = $1
+For each of them, retrieve permissions, users shared, last action, etc:
+
+    select * from permissions where folder_id = $1
     select * from users where permission_id = $1
     select * from events where user_id = $1
-* For each child folder, repeat the same process
+
+For each child folder, repeat the same process
 ---
-### How to solve n + 1 problem with ActiveRecord?
-* bullet gem (https://github.com/flyerhzm/bullet)
+### How to detect/solve n + 1 problem with ActiveRecord?
+* Detection: bullet gem (https://github.com/flyerhzm/bullet)
 * Eager loading
 * Custom query using Arel
 ---
@@ -85,9 +89,10 @@ Scout shows that `/cats/<cat_id>/with_children.json` endpoint is:
 ---
 ### Eager loading
 
-Number of queries: 3
+Number of queries: 4
 
     select * from shared_filters where tenant_id = $1
+    select * from object_locks where filter_id = $1
     select * from reports where id in ($1)
     select * from dashboards where id in ($1)
 ---
@@ -138,27 +143,27 @@ Number of queries: 1
 ---
 ### Hieriarchical query
 
-* Retrieve parents folder of a report
+* Retrieve ancestor folders of a report
 * Retrieve descendants of a folder
 ---
 ### Example
 
-    class Category < ActiveRecord::Base
+    class Folder < ActiveRecord::Base
       has_one :parent
     end
     
     class Report < ActiveRecord::Base
-      has_one :category
+      has_one :parent_folder
     end
 ---
 ### Normal implementation
 
     def ancestors(report)
-      return [] unless report.category.present?
-      category = report.category
-      while category.present?
-        res << category
-        category = category.parent
+      return [] unless report.folder.present?
+      folder = report.folder
+      while folder.present?
+        res << folder
+        folder = folder.parent
       end
       res.reverse
     end
@@ -167,13 +172,13 @@ Number of queries: 1
 
     with recursive tree as (
       select R.parent_id as id, array[R.parent_id]::integer[] as path
-      from #{Category.table_name} R
-      where id = #{category_id}
+      from #{Folder.table_name} R
+      where id = #{folder_id}
 
       union
 
       select C.parent_id, tree.path || C.parent_id
-      from #{Category.table_name} C
+      from #{Folder.table_name} C
       join tree on tree.id = C.id
     ) select path from tree
     where id = 0
@@ -191,8 +196,12 @@ Commandline visualizer: https://github.com/simon-engledew/gocmdpev
 
 ![cmdpev](static/gocmdpev.png)
 ---
+### Fixing performance
+* Rewrite queries
+* Adding indexes
+---
 ### Adding indexes
-* Remember to set algorithm: concurrently
+Remember to set algorithm: concurrently
 
     add_index :users, :tenant_id, algorithm: :concurrently
 ---
@@ -203,6 +212,7 @@ Commandline visualizer: https://github.com/simon-engledew/gocmdpev
 * Example: https://about.gitlab.com/2016/03/18/fast-search-using-postgresql-trigram-indexes/
 * Reduce search time ~20ms -> ~1ms
 ---
+
 	class AddGinIndexToReportsTitle < ActiveRecord::Migration[5.0]
 	  def up
 		execute 'create extension if not exists pg_trgm'
