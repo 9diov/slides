@@ -280,6 +280,7 @@ Source: https://www.citusdata.com/blog/2016/11/04/autovacuum-not-the-enemy/
 ### Partial index
 ![partial_index](static/partial_index.png)
 ---
+### Adding index
 
     add_index :jobs, :created_at, {
       where: 'status = 3',
