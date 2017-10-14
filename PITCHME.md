@@ -273,6 +273,13 @@ got inserted/updated/deleted
 ### Partial index
 ![partial_index](static/partial_index.png)
 ---
+
+    add_index :jobs, :created_at, {
+      where: 'status = 3',
+      algorithm: :concurrently,
+      name: 'index_jobs_on_created_at_created'
+    }
+---
 # Results
 Reduce query time from mean 2000ms -> 50ms
 ---
