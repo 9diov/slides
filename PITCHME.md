@@ -251,6 +251,8 @@ Performance did improve, but not by much
 ---
 Root cause hypothesis: lack of proper database maintenance
 ---
+![heap_block](static/heap_blocks.png)
+---
 ### Vacuum/analyze
 * Vacuum: clean up dead rows from disk
 * Analayze: Update statistics on table for accurate query planning
@@ -268,8 +270,11 @@ Vacuum/analyze every time
 
 got inserted/updated/deleted
 ---
+### Partial index
+![partial_index](static/partial_index.png)
+---
 # Results
-Reduce query time from mean 2000ms -> 150ms
+Reduce query time from mean 2000ms -> 50ms
 ---
 ### Problem 4: Search is slow
 Problem: Search takes a long time to load
