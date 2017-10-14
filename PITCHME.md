@@ -1,5 +1,4 @@
 ---
-## Optimizing a Rails + PostgreSQL App
 ---
 ### Agenda
 * Introduction
@@ -46,6 +45,8 @@
 * Tracking provided by hosting services (AWS/DO/GCP/Azure...)
 * Commercials: Scout
 * Query visualization/alerting tools: Holistics
+---
+![DO](static/do_charts.png)
 ---
 ![Kibana](static/kibana.png)
 ---
@@ -223,7 +224,9 @@ Careful with SQL injection though
 ---
 ### Problem 3: Slow query on huge table
 Problem: Complex job queuing query takes more than 1 second to run
-
+---
+![sql_query](static/big_sql_query.png)
+---
 Root cause hypothesis: The query is not optimized
 ---
 ### Debugging query performance
