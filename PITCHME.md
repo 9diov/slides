@@ -270,6 +270,9 @@ Vacuum/analyze every time
 
 got inserted/updated/deleted
 ---
+Source: https://www.citusdata.com/blog/2016/11/04/autovacuum-not-the-enemy/
+![autovacuum](static/autovacuum.png)
+---
 ### Partial index
 ![partial_index](static/partial_index.png)
 ---
