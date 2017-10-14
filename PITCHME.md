@@ -80,9 +80,7 @@
 * Rewrite queries
 * Adding indexes
 ---
-### End of part 2 conclusion
-* Use tracking/monitoring tools
-* Don't assume, propose and validate your hypothesis
+### End of part 2
 ---
 ### Part 3: Our problems and how we fixed them
 * Slow hieriarchical query
