@@ -1,4 +1,5 @@
 ---
+Optimizing Rails + PostgreSQL app
 ---
 ### Agenda
 * Introduction
@@ -252,6 +253,9 @@ Performance did improve, but not by much
 Root cause hypothesis: lack of proper database maintenance
 ---
 ![heap_block](static/heap_blocks.png)
+---
+### MVCC
+See Huy's slides
 ---
 ### Vacuum/analyze
 * Vacuum: clean up dead rows from disk
