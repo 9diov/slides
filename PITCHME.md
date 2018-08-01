@@ -6,6 +6,7 @@ Hierarchical data in relational database
 * Adjacency list
 * Closure table
 * Nested set
+* Database specific implementations
 * Conclusion
 ---
 ### Part 1: Introduction
@@ -36,4 +37,6 @@ Hierarchical data in relational database
 ### End of part 4
 ---
 ### Conclusion
+---
+### Questions?
 
