@@ -14,6 +14,16 @@ Hierarchical data in relational database
 * Why stores in relational database?
 +++
 ### What is hierarchical data?
+Data that has parent-child relationship such as
+
+* File system: directory - child
+* Forum post
++++
+### File system
+![HN](static/finder.png)
++++
+### Forum post
+![HN](static/hacker_news.png)
 +++
 ### End of part 1
 ---
