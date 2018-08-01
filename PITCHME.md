@@ -12,6 +12,7 @@ Hierarchical data in relational database
 ### Part 1: Introduction
 * What is hierarchical data?
 * Why stores in relational database?
+* Common ways to store hierarchical data in relational database
 +++
 ### What is hierarchical data?
 Data that has parent-child relationship such as
@@ -25,11 +26,20 @@ Data that has parent-child relationship such as
 ### Forum post
 ![HN](static/hacker_news.png)
 +++
+### Why stores in relational database?
+* No additional database needed
+* Can join together with other types of relational data
++++
+## Common strategies
+* Adjacency list
+* Closure table
+* Nested set
++++
 ### End of part 1
 ---
 ### Agenda
 * Introduction
-* Adjacency list
+* @color[#DC143C](Adjacency list)
 * Closure table
 * Nested set
 * Conclusion
@@ -38,13 +48,34 @@ Data that has parent-child relationship such as
 +++
 ### End of part 2
 ---
+### Agenda
+* Introduction
+* Adjacency list
+* @color[#DC143C](Closure table)
+* Nested set
+* Conclusion
+---
 ### Part 3: Closure table
 +++
 ### End of part 3
 ---
+### Agenda
+* Introduction
+* Adjacency list
+* Closure table
+* @color[#DC143C](Nested set)
+* Conclusion
+---
 ### Part 4: Nested set
 +++
 ### End of part 4
+---
+### Agenda
+* Introduction
+* Adjacency list
+* Closure table
+* Nested set
+* @color[#DC143C](Conclusion)
 ---
 ### Conclusion
 ---
