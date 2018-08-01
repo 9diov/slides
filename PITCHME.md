@@ -39,7 +39,7 @@ Data that has parent-child relationship such as
 ---
 ### Agenda
 * Introduction
-* @color[#DC143C](Adjacency list)
+* @color[#D33682](Adjacency list)
 * Closure table
 * Nested set
 * Conclusion
@@ -51,7 +51,7 @@ Data that has parent-child relationship such as
 ### Agenda
 * Introduction
 * Adjacency list
-* @color[#DC143C](Closure table)
+* @color[#D33682](Closure table)
 * Nested set
 * Conclusion
 ---
@@ -63,7 +63,7 @@ Data that has parent-child relationship such as
 * Introduction
 * Adjacency list
 * Closure table
-* @color[#DC143C](Nested set)
+* @color[#D33682](Nested set)
 * Conclusion
 ---
 ### Part 4: Nested set
@@ -75,7 +75,7 @@ Data that has parent-child relationship such as
 * Adjacency list
 * Closure table
 * Nested set
-* @color[#DC143C](Conclusion)
+* @color[#D33682](Conclusion)
 ---
 ### Conclusion
 ---
