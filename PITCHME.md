@@ -2,13 +2,13 @@
 Hierarchical data in relational database
 ---
 ### Agenda
-* Introduction
+* @color[#D33682](Introduction)
 * Adjacency list
 * Closure table
 * Nested set
 * Database specific implementations
 * Conclusion
----
++++
 ### Part 1: Introduction
 * What is hierarchical data?
 * Why stores in relational database?
@@ -43,7 +43,7 @@ Data that has parent-child relationship such as
 * Closure table
 * Nested set
 * Conclusion
----
++++
 ### Part 2: Adjacency list
 +++
 @snap[north-west left]
@@ -90,6 +90,37 @@ Data that has parent-child relationship such as
 </table>
 @snapend
 +++
+### Insert/Move
+* Insert a new node
+
+	insert into folder (id, parent_id) values(5, 3)
+
+* Move a node to a different parent
+
+	update folder set parent_id = 2 where id = 5
++++
+### Query children/parent
+* Children
+	select id from folder where parent_id = X
+
+* Parent
+	select id from folder where id = X.parent_id
++++
+### Descendants
+* Need to loop and send multiple queries, or...
++++
+### Recursive CTE
+* Get all descendants of X:
+
+	with recursive tree (id) as (
+	  select C.id from report_categories C
+	  where C.parent_id = X.id
+	  union
+	  select C.id from report_categories C, tree T
+	  where C.parent_id = T.id
+	)
+	select * from tree;
++++
 ### End of part 2
 ---
 ### Agenda
@@ -98,7 +129,7 @@ Data that has parent-child relationship such as
 * @color[#D33682](Closure table)
 * Nested set
 * Conclusion
----
++++
 ### Part 3: Closure table
 +++
 ### End of part 3
@@ -109,7 +140,7 @@ Data that has parent-child relationship such as
 * Closure table
 * @color[#D33682](Nested set)
 * Conclusion
----
++++
 ### Part 4: Nested set
 +++
 ### End of part 4
@@ -120,7 +151,7 @@ Data that has parent-child relationship such as
 * Closure table
 * Nested set
 * @color[#D33682](Conclusion)
----
++++
 ### Conclusion
 ---
 ### Questions?
