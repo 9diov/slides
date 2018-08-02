@@ -46,7 +46,10 @@ Data that has parent-child relationship such as
 ---
 ### Part 2: Adjacency list
 +++
+* Each node has a pointer to its' parent
+@snap[west]
 ![Adjacency list](static/adjacency_list_db_diagram.png)
+@snapend
 +++
 ### End of part 2
 ---
