@@ -49,7 +49,7 @@ Data that has parent-child relationship such as
 @snap[north-west left]
 <h4>Structure</h4>
 <ul>
-	<li>Each node has a pointer to its' parent</li>
+    <li>Each node has a pointer to its' parent</li>
 </ul>
 @snapend
 
@@ -64,28 +64,28 @@ Data that has parent-child relationship such as
 @snap[south-east]
 <table>
 <tr>
-	<th>ID</th>
-	<th>Parent ID</th>
+    <th>ID</th>
+    <th>Parent ID</th>
 </tr>
 <tr>
-	<td>1</td>
-	<td>NULL</td>
+    <td>1</td>
+    <td>NULL</td>
 </tr>
 <tr>
-	<td>2</td>
-	<td>1</td>
+    <td>2</td>
+    <td>1</td>
 </tr>
 <tr>
-	<td>3</td>
-	<td>1</td>
+    <td>3</td>
+    <td>1</td>
 </tr>
 <tr>
-	<td>4</td>
-	<td>2</td>
+    <td>4</td>
+    <td>2</td>
 </tr>
 <tr>
-	<td>5</td>
-	<td>3</td>
+    <td>5</td>
+    <td>3</td>
 </tr>
 </table>
 @snapend
@@ -93,18 +93,18 @@ Data that has parent-child relationship such as
 ### Insert/Move
 * Insert a new node
 
-	insert into folder (id, parent_id) values(5, 3)
+    insert into folder (id, parent_id) values(5, 3)
 
 * Move a node to a different parent
 
-	update folder set parent_id = 2 where id = 5
+    update folder set parent_id = 2 where id = 5
 +++
 ### Query children/parent
 * Children
-	select id from folder where parent_id = X
+    select id from folder where parent_id = X
 
 * Parent
-	select id from folder where id = X.parent_id
+    select id from folder where id = X.parent_id
 +++
 ### Descendants
 * Need to loop and send multiple queries, or...
@@ -112,14 +112,14 @@ Data that has parent-child relationship such as
 ### Recursive CTE
 * Get all descendants of X:
 
-	with recursive tree (id) as (
-	  select C.id from report_categories C
-	  where C.parent_id = X.id
-	  union
-	  select C.id from report_categories C, tree T
-	  where C.parent_id = T.id
-	)
-	select * from tree;
+    with recursive tree (id) as (
+      select C.id from report_categories C
+      where C.parent_id = X.id
+      union
+      select C.id from report_categories C, tree T
+      where C.parent_id = T.id
+    )
+    select * from tree;
 +++
 ### End of part 2
 ---
