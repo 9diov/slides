@@ -46,7 +46,7 @@ Data that has parent-child relationship such as
 ---
 ### Part 2: Adjacency list
 +++
-@snap[north-west]
+@snap[north-west left]
 <h4>Adjacency list</h4>
 <ul>
 	<li>Each node has a pointer to its' parent</li>
@@ -55,6 +55,23 @@ Data that has parent-child relationship such as
 
 @snap[north-east right-diagram]
 ![Adjacency list](static/adjacency_list_db_diagram.png)
+@snapend
+
+@snap[south-east]
+<table>
+<tr>
+	<th>ID</th>
+	<th>Parent ID</th>
+</tr>
+<tr>
+	<td>2</td>
+	<td>1</td>
+</tr>
+<tr>
+	<td>3</td>
+	<td>1</td>
+</tr>
+</table>
 @snapend
 +++
 ### End of part 2
