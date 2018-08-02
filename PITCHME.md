@@ -30,6 +30,11 @@ Data that has parent-child relationship such as
 * No additional database needed
 * Can join together with other types of relational data
 +++
+### Operations
+* Insert/move/delete
+* Query parents/children
+* Query ancestors/descendants
++++
 ## Common strategies
 * Adjacency list
 * Closure table
@@ -112,16 +117,39 @@ Parent
 Need to loop and send multiple queries, or...
 +++
 ### Recursive CTE
+* Supported by:
+    * PostgreSQL 8.4
+    * MySQL 8.0
+    * Oracle 11g Release 2
+    * SQL Server 2005
+### Get descendants (PostgreSQL)
 Get all descendants of X:
 
     with recursive tree (id) as (
-      select C.id from report_categories C
-      where C.parent_id = X.id
+      select F.id from folder F
+      where F.parent_id = X.id
       union
-      select C.id from report_categories C, tree T
-      where C.parent_id = T.id
+      select F.id from folder F, tree T
+      where F.parent_id = T.id
     )
     select * from tree;
++++
+### Get ancestors (PostgreSQL)
+
+    with recursive tree (id, path) as (
+      select F.parent_id as id, array[F.parent_id]::integer[] as path
+      from folder F
+      where id = X.id
+      union
+      select F.parent_id, tree.path || F.parent_id
+      from folder F
+      join tree on tree.id = C.id
+    ) select path from tree
+    where id = 0
++++
+#### Performance
+* Insert/move/delete: fast
+* Get ancestors/descendants: acceptable (with recursive CTE)
 +++
 ### End of part 2
 ---
