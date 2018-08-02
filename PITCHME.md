@@ -113,7 +113,7 @@ Parent
 
     select id from folder where id = X.parent_id
 +++
-### Descendants
+### Ancestors/Descendants
 Need to loop and send multiple queries, or...
 +++
 ### Recursive CTE
@@ -122,6 +122,7 @@ Need to loop and send multiple queries, or...
     * MySQL 8.0
     * Oracle 11g Release 2
     * SQL Server 2005
++++
 ### Get descendants (PostgreSQL)
 Get all descendants of X:
 
@@ -147,9 +148,13 @@ Get all descendants of X:
     ) select path from tree
     where id = 0
 +++
-#### Performance
+### Performance
 * Insert/move/delete: fast
 * Get ancestors/descendants: acceptable (with recursive CTE)
++++
+### When to use
+* A lot of mutations: Insert/move/delete
+* Don't require super fast ancestors/descendants query
 +++
 ### End of part 2
 ---
@@ -161,6 +166,44 @@ Get all descendants of X:
 * Conclusion
 +++
 ### Part 3: Closure table
++++
+### Structure
+* A separate table called "closure table" that stores all paths from each node to another
+* Each node also has a path to itself
++++
+![](static/closure_table_db_diagram.png)
++++
+@snap[west diagram]
+![](static/directory_structure.png)
+@snapend
+@snap[east]
+<table>
+<tr>
+    <th>Ancestor ID</th>
+    <th>Descendant ID</th>
+</tr>
+<tr>
+    <td>1</td>
+    <td>NULL</td>
+</tr>
+<tr>
+    <td>2</td>
+    <td>1</td>
+</tr>
+<tr>
+    <td>3</td>
+    <td>1</td>
+</tr>
+<tr>
+    <td>4</td>
+    <td>2</td>
+</tr>
+<tr>
+    <td>5</td>
+    <td>3</td>
+</tr>
+</table>
+@snapend
 +++
 ### End of part 3
 ---
