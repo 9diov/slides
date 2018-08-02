@@ -47,7 +47,7 @@ Data that has parent-child relationship such as
 ### Part 2: Adjacency list
 +++
 @snap[north-west left]
-<h4>Adjacency list</h4>
+<h4>Structure</h4>
 <ul>
 	<li>Each node has a pointer to its' parent</li>
 </ul>
@@ -64,12 +64,24 @@ Data that has parent-child relationship such as
 	<th>Parent ID</th>
 </tr>
 <tr>
+	<td>1</td>
+	<td>NULL</td>
+</tr>
+<tr>
 	<td>2</td>
 	<td>1</td>
 </tr>
 <tr>
 	<td>3</td>
 	<td>1</td>
+</tr>
+<tr>
+	<td>4</td>
+	<td>2</td>
+</tr>
+<tr>
+	<td>5</td>
+	<td>3</td>
 </tr>
 </table>
 @snapend
