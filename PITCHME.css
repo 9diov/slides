@@ -1,9 +1,7 @@
 .left-diagram img {
-  width: 50%;
   border: none !important;
   box-shadow: none !important;
 }
 
 .right-content {
-  width: 50%;
 }

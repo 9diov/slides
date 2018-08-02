@@ -51,8 +51,10 @@ Data that has parent-child relationship such as
 @snapend
 
 @snap[east right-content]
-### Adjacency list
-* Each node has a pointer to its' parent
+<h4>Adjacency list</h4>
+<ul>
+	<li> Each node has a pointer to its' parent </li>
+</ul>
 @snapend
 +++
 ### End of part 2
