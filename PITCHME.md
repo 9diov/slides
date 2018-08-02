@@ -91,26 +91,28 @@ Data that has parent-child relationship such as
 @snapend
 +++
 ### Insert/Move
-* Insert a new node
+Insert a new node
 
     insert into folder (id, parent_id) values(5, 3)
 
-* Move a node to a different parent
+Move a node to a different parent
 
     update folder set parent_id = 2 where id = 5
 +++
 ### Query children/parent
-* Children
+Children
+
     select id from folder where parent_id = X
 
-* Parent
+Parent
+
     select id from folder where id = X.parent_id
 +++
 ### Descendants
-* Need to loop and send multiple queries, or...
+Need to loop and send multiple queries, or...
 +++
 ### Recursive CTE
-* Get all descendants of X:
+Get all descendants of X:
 
     with recursive tree (id) as (
       select C.id from report_categories C
