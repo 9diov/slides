@@ -170,6 +170,7 @@ Get all descendants of X:
 ### Structure
 * A separate table called "closure table" that stores all paths from each node to another
 * Each node also has a path to itself
+* Optional depth column
 +++
 ![](static/closure_table_db_diagram.png)
 +++
@@ -215,11 +216,49 @@ Get all descendants of X:
     <td>3</td>
 </tr>
 <tr>
-    <td>...</td>
-    <td>...</td>
+    <td>3</td>
+    <td>5</td>
 </tr>
 </table>
 @snapend
++++
+### Insert
+
+    insert into folder (id, name); -> <id>
+    insert into closure (ancestor_id, descendant_id, depth)
+    select ancestor_id, <id>, depth + 1 from closure
+    where descendant_id = <parent_id>
+    union all select <id>, <id>, 0;
++++
+### Move
+Move <id> to under <new_parent_id>
+
+    delete from closure where descendant_id = <id> and ancestor_id != <id>;
+    insert into closure (ancestor_id, descendant_id, depth)
+    select ancestor_id, <id>, depth + 1 from closure
+    where descendant_id = <new_parent_id>
+    union all select <id>, <id>, 0;
++++
+### Delete
+
+    delete from closure where descendant_id = <id>
++++
+### Query children
+
+    select F.id, F.name
+    from folder F left join closure C on ancestor_id = id
+    where C.descendant_id != <id>
+    and C.depth = 1
++++
+### Query parent
+
+    select F.id, F.name
+    from folder F left join closure C on descendant_id = id
+    where C.ancestor_id != <id>
+    and C.depth = 1
++++
+### Ancestors/Descendants
++++
 +++
 ### End of part 3
 ---
