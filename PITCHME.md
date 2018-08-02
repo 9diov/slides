@@ -53,8 +53,12 @@ Data that has parent-child relationship such as
 </ul>
 @snapend
 
-@snap[north-east right-diagram]
+@snap[north-east diagram]
 ![Adjacency list](static/adjacency_list_db_diagram.png)
+@snapend
+
+@snap[south-west diagram]
+![](static/directory_structure.png)
 @snapend
 
 @snap[south-east]
