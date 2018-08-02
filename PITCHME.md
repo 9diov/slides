@@ -185,10 +185,6 @@ Get all descendants of X:
 </tr>
 <tr>
     <td>1</td>
-    <td>1</td>
-</tr>
-<tr>
-    <td>1</td>
     <td>2</td>
 </tr>
 <tr>
@@ -205,15 +201,7 @@ Get all descendants of X:
 </tr>
 <tr>
     <td>2</td>
-    <td>2</td>
-</tr>
-<tr>
-    <td>2</td>
     <td>4</td>
-</tr>
-<tr>
-    <td>3</td>
-    <td>3</td>
 </tr>
 <tr>
     <td>3</td>
@@ -227,8 +215,7 @@ Get all descendants of X:
     insert into folder (id, name); -> <id>
     insert into closure (ancestor_id, descendant_id, depth)
     select ancestor_id, <id>, depth + 1 from closure
-    where descendant_id = <parent_id>
-    union all select <id>, <id>, 0;
+    where descendant_id = <parent_id>;
 +++
 ### Move
 Move <id> to under <new_parent_id>
@@ -236,8 +223,7 @@ Move <id> to under <new_parent_id>
     delete from closure where descendant_id = <id> and ancestor_id != <id>;
     insert into closure (ancestor_id, descendant_id, depth)
     select ancestor_id, <id>, depth + 1 from closure
-    where descendant_id = <new_parent_id>
-    union all select <id>, <id>, 0;
+    where descendant_id = <new_parent_id>;
 +++
 ### Delete
 
@@ -247,18 +233,25 @@ Move <id> to under <new_parent_id>
 
     select F.id, F.name
     from folder F left join closure C on ancestor_id = id
-    where C.descendant_id != <id>
-    and C.depth = 1
+    where C.depth = 1
 +++
 ### Query parent
 
     select F.id, F.name
     from folder F left join closure C on descendant_id = id
-    where C.ancestor_id != <id>
-    and C.depth = 1
+    where C.depth = 1
 +++
-### Ancestors/Descendants
+### Ancestors
+
+    select F.id, F.name
+    from folder F left join closure C on descendant_id = id
+    order by C.depth
 +++
+### Descendants
+
+    select F.id, F.name
+    from folder F left join closure C on ancestor_id = id
+    order by C.depth
 +++
 ### End of part 3
 ---
