@@ -261,13 +261,11 @@ Move `<id>` to under `<new_parent_id>`
 
     select F.id, F.name
     from folder F left join closure C on descendant_id = id
-    order by C.depth
 +++
 ### Descendants
 
     select F.id, F.name
     from folder F left join closure C on ancestor_id = id
-    order by C.depth
 +++
 ### Performance
 * Insert/move/delete: fast but not as fast as adjacency list
