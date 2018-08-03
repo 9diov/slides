@@ -67,11 +67,12 @@ Data that has parent-child relationship such as
 ![Adjacency list](static/adjacency_list_db_diagram.png)
 @snapend
 
-@snap[south-west diagram]
++++
+@snap[north-west diagram]
 ![](static/tree_structure.png)
 @snapend
 
-@snap[south-east]
+@snap[north-east]
 <table>
 <tr>
     <th>ID</th>
@@ -498,8 +499,6 @@ Child is a descendant that does not have ancestor which is descendant of given n
 Nested Sets is a clever solution – maybe too clever. It also fails to support referential integrity. It’s best used when you need to query a tree more frequently than you need to modify the tree. - _SQL Antipatterns_
 +++
 ### Performance comparison
-<h3>Performance</h3>
-
 <table>
 <tr>
 	<th>Operation</th>
@@ -555,20 +554,24 @@ Nested Sets is a clever solution – maybe too clever. It also fails to support 
 
 * Recursive CTE
 * [ltree](https://www.postgresql.org/docs/current/static/ltree.html) for materialized path
+* Recommended: adjacency list
 +++
 ### MySQL
 
 * Recursive CTE (since 8.0)
 * If not supported, use [session variable](https://explainextended.com/2009/09/29/adjacency-list-vs-nested-sets-mysql/) and triggers.
+* Recommended: adjacency list for MySQL >= 8.0, nested set or closure table otherwise
 +++
 ### Oracle
 
 * Use `CONNECT BY` for adjacency list
+* Recommended: adjacency list
 +++
 ### SQL Server
 
 * Use recursive CTE for adjacency list
 * Use [HierarchyId](https://docs.microsoft.com/en-us/sql/t-sql/data-types/hierarchyid-data-type-method-reference?view=sql-server-2017) for lineage column
+* Recommended: adjacency list
 +++
 Discussion for adjacency list vs nested set for various types of databases can be found [here](https://explainextended.com/2009/09/24/adjacency-list-vs-nested-sets-postgresql/)
 +++
