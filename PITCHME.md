@@ -171,11 +171,8 @@ Get all descendants of X:
 ### Part 3: Closure table
 +++
 ### Structure
-* A separate table called "closure table" that stores all paths from each node to another
-* Each node also has a path to itself
-* Optional depth column
-* Storage cost: extra table
-+++
+A separate table called "closure table" that stores all paths from each node to another
+
 ![](static/closure_table_db_diagram.png)
 +++
 @snap[west diagram]
