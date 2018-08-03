@@ -488,6 +488,7 @@ Child is a descendant that does not have ancestor which is descendant of given n
 +++
 ### When to use
 * Very few mutations (insert/move/delete) such as forum posts
+* Need fast descendants/ancestors query
 * Database does not support recursive CTE (e.g. MySQL < 8.0)
 +++
 ### Variants
@@ -559,13 +560,18 @@ Nested Sets is a clever solution – maybe too clever. It also fails to support 
 ### MySQL
 
 * Recursive CTE (since 8.0)
-* If not supported, use [session variable](https://explainextended.com/2009/09/29/adjacency-list-vs-nested-sets-mysql/) and triggers.
+* If not supported, use nested set with [session variable](https://explainextended.com/2009/09/29/adjacency-list-vs-nested-sets-mysql/), R-tree index with geometry type.
 * Recommended: adjacency list for MySQL >= 8.0, nested set or closure table otherwise
 +++
 ### Oracle
+Use `CONNECT BY` for adjacency list
 
-* Use `CONNECT BY` for adjacency list
-* Recommended: adjacency list
+	SELECT  id, name
+	FROM    folder
+	START WITH
+	id = <id>
+	CONNECT BY
+	parent_id = PRIOR id
 +++
 ### SQL Server
 
