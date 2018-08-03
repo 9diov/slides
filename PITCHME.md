@@ -64,7 +64,7 @@ Data that has parent-child relationship such as
 @snapend
 
 @snap[south-west diagram]
-![](static/directory_structure.png)
+![](static/tree.png)
 @snapend
 
 @snap[south-east]
@@ -176,7 +176,7 @@ A separate table called "closure table" that stores all paths from each node to 
 ![](static/closure_table_db_diagram.png)
 +++
 @snap[west diagram]
-![](static/directory_structure.png)
+![](static/tree.png)
 @snapend
 @snap[east]
 <table>
@@ -293,7 +293,7 @@ Extra 2 columns: `left` and `right`
 @snapend
 
 @snap[south-west diagram]
-![](static/directory_structure.png)
+![](static/tree.png)
 @snapend
 
 @snap[south-east]
