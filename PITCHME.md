@@ -290,7 +290,7 @@ Move `<id>` to under `<new_parent_id>`
 * Extra 2 columns left and right
 * Rule: descendants' left and right numbers are between ancestor's numbers
 +++
-@snap[north-east diagram]
+@snap[north-west diagram]
 ![](static/nested_set.png)
 @snapend
 
@@ -298,7 +298,7 @@ Move `<id>` to under `<new_parent_id>`
 ![](static/directory_structure.png)
 @snapend
 
-@snap[south-east]
+@snap[north-east]
 <table>
 <tr>
     <th>ID</th>
@@ -365,5 +365,9 @@ Move `<id>` to under `<new_parent_id>`
 +++
 ### Conclusion
 ---
+
 ### Questions?
+---
+References:
+
 
