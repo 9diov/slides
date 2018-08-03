@@ -183,7 +183,7 @@ A separate table called "closure table" that stores all paths from each node to 
 @snap[west diagram]
 ![](static/tree_structure.png)
 @snapend
-@snap[east]
+@snap[east half]
 <table>
 <tr>
     <th>Ancestor</th>
