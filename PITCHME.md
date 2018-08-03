@@ -332,6 +332,12 @@ Rule: descendants' left and right numbers are between ancestor's numbers
 @snapend
 +++
 ### Insert
+
+![](static/nested_set_insert_1.png)
++++
+### Insert (cont)
+
+![](static/nested_set_insert_2.png)
 +++
 ### Move
 +++
