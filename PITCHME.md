@@ -350,13 +350,15 @@ Insert under (id, left, right) of (4, 3, 4)
 
 	insert into folder (6, <parent.left> + 1, <parent.left> + 2)
 +++
-### Move
-+++
 ### Delete
+
+Just delete the row since it does not affect the nested set's rule.
+
+	delete from folders where id = <id>
 +++
-### Children
-+++
-### Parent
+### Move
+
+Combination of delete and insert.
 +++
 ### Query ancestors
 
@@ -372,6 +374,10 @@ Insert under (id, left, right) of (4, 3, 4)
 	on D.left between A.left and A.right
 	where A.id = <id>
 +++
+### Children
++++
+### Parent
++++
 ### Performance
 * Insert/move/delete: slow
 * 
@@ -383,7 +389,9 @@ Insert under (id, left, right) of (4, 3, 4)
 * Nested intervals:
 	* Use real/float instead of integer for `left` and `right` indexes
 * Matrix encoding:
-	
++++
+### Conclusion
+Nested Sets is a clever solution – maybe too clever. It also fails to support referential integrity. It’s best used when you need to query a tree more frequently than you need to modify the tree. - SQL Antipatterns
 +++
 ### End of part 4
 ---
