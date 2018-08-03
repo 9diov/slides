@@ -218,9 +218,11 @@ Get all descendants of X:
     where descendant_id = <parent_id>;
 +++
 ### Move
-Move <id> to under <new_parent_id>
+Move `<id>` to under `<new_parent_id>`
 
-    delete from closure where descendant_id = <id> and ancestor_id != <id>;
+    delete from closure
+	where descendant_id = <id> and ancestor_id != <id>;
+
     insert into closure (ancestor_id, descendant_id, depth)
     select ancestor_id, <id>, depth + 1 from closure
     where descendant_id = <new_parent_id>;
