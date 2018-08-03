@@ -157,6 +157,7 @@ Get all descendants of X:
 	* IBM DB2 UDB 8 (2002)
 +++
 <h3>Performance</h3>
+m = depth of tree
 
 <table>
 <tr>
@@ -294,6 +295,7 @@ Move `<id>` to under `<new_parent_id>`
     from folder F left join closure C on ancestor_id = id
 +++
 <h3>Performance</h3>
+m = depth of tree
 
 <table>
 <tr>
@@ -458,6 +460,7 @@ Child is a descendant that does not have ancestor which is descendant of given n
 	where A.id = <id> and B.id IS NULL
 +++
 <h3>Performance</h3>
+m = depth of tree
 
 <table>
 <tr>
@@ -595,7 +598,7 @@ Discussion for adjacency list vs nested set for various types of databases can b
 * Use adjacency list first
 * If existing table cannot be modified use closure table with triggers
 * If not fast enough then try other approaches
-* Different strategies can be combined
+* Different strategies can be combined (adjacency list + nested set)
 * If makes sense, use grapth databases such as Neo4J
 ---
 ### Questions?
