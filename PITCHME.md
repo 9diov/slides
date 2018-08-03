@@ -287,7 +287,8 @@ Move `<id>` to under `<new_parent_id>`
 ### Part 4: Nested set
 +++
 ### Structure
-* Extra 2 columns: `left` and `right`
+Extra 2 columns: `left` and `right`
+
 ![](static/nested_set.png)
 +++
 @snap[north-west diagram]
