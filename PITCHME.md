@@ -395,7 +395,7 @@ Parent is an ancestor that does not have descendant which is ancestor of given n
 	join folders A
 	on D.left between A.left and A.right
 	left outer join folders B
-	on D.left betwen B.left and B.right and B.left between A.left and A.right
+	on D.left between B.left and B.right and B.left between A.left and A.right
 	where D.id = <id> and B.id IS NULL
 +++
 ### Children
@@ -405,7 +405,7 @@ Child is a descendant that does not have ancestor which is descendant of given n
 	join folders D
 	on D.left between A.left and A.right
 	left outer join folders B
-	on D.left betwen B.left and B.right and B.left between A.left and A.right
+	on D.left between B.left and B.right and B.left between A.left and A.right
 	where A.id = <id> and B.id IS NULL
 +++
 ### Performance
