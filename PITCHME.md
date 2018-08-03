@@ -288,7 +288,7 @@ Extra 2 columns: `left` and `right`
 
 ![](static/nested_set.png)
 +++
-@snap[south diagram]
+@snap[south-west diagram]
 Rule: descendants' left and right numbers are between ancestor's numbers
 @snapend
 
