@@ -17,7 +17,7 @@ Hierarchical data in relational database
 ### What is hierarchical data?
 Data that has parent-child relationship such as
 
-* File system: directory - child
+* File system: directory - file
 * Forum post
 +++
 ### File system
