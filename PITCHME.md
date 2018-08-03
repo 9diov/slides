@@ -119,7 +119,7 @@ Parent
     select id from folder where id = X.parent_id
 +++
 ### Ancestors/Descendants
-Need to loop and send multiple queries, or...
+Need to loop and send multiple queries (N + 1 problem), or...
 +++
 ### Get descendants (PostgreSQL)
 Get all descendants of X:
@@ -186,7 +186,7 @@ Get all descendants of X:
 +++
 ### When to use
 * A lot of mutations: Insert/move/delete
-* Don't require super fast ancestors/descendants query
+* Database supports recursive CTE
 +++
 ### End of part 2
 ---
@@ -292,12 +292,37 @@ Move `<id>` to under `<new_parent_id>`
     select F.id, F.name
     from folder F left join closure C on ancestor_id = id
 +++
-### Performance
-* Insert/move/delete: fast but not as fast as adjacency list
-* Get ancestors/descendants: fast
+<h3>Performance</h3>
+
+<table>
+<tr>
+	<th>Operation</th>
+	<th>Performance</th>
+</tr>
+<tr>
+	<td>Insert</td>
+	<td>O(m)</td>
+</tr>
+<tr>
+	<td>Move</td>
+	<td>O(m)</td>
+</tr>
+<tr>
+	<td>Delete</td>
+	<td>O(m)</td>
+</tr>
+<tr>
+	<td>Ancestors</td>
+	<td>O(m)</td>
+</tr>
+<tr>
+	<td>Descendants</td>
+	<td>O(m)</td>
+</tr>
+</table>
 +++
 ### When to use
-* A lot of mutations: Insert/move/delete
+* Balanced, decently fast for all cases
 * Extra storage cost for the closure table is fine
 +++
 ### End of part 3
@@ -431,13 +456,38 @@ Child is a descendant that does not have ancestor which is descendant of given n
 	on D.left between B.left and B.right and B.left between A.left and A.right
 	where A.id = <id> and B.id IS NULL
 +++
-### Performance
-* Insert/move/delete: slow - O(n/2)
-* Fast ancestors/descendants
+<h3>Performance</h3>
+
+<table>
+<tr>
+	<th>Operation</th>
+	<th>Performance</th>
+</tr>
+<tr>
+	<td>Insert</td>
+	<td>O(n/2)</td>
+</tr>
+<tr>
+	<td>Move</td>
+	<td>O(n/2)</td>
+</tr>
+<tr>
+	<td>Delete</td>
+	<td>O(n/2)</td>
+</tr>
+<tr>
+	<td>Ancestors</td>
+	<td>O(m)</td>
+</tr>
+<tr>
+	<td>Descendants</td>
+	<td>O(m)</td>
+</tr>
+</table>
 +++
 ### When to use
-* Very few mutations (insert/move/delete)
-* A lot of ancestors/descendants queries
+* Very few mutations (insert/move/delete) such as forum posts
+* Database does not support recursive CTE (e.g. MySQL < 8.0)
 +++
 ### Variants
 * Nested intervals:
@@ -446,6 +496,48 @@ Child is a descendant that does not have ancestor which is descendant of given n
 +++
 ### Conclusion
 Nested Sets is a clever solution – maybe too clever. It also fails to support referential integrity. It’s best used when you need to query a tree more frequently than you need to modify the tree. - _SQL Antipatterns_
++++
+### Performance comparison
+<h3>Performance</h3>
+
+<table>
+<tr>
+	<th>Operation</th>
+	<th>Adjacency list</th>
+	<th>Closure table</th>
+	<th>Nested set</th>
+</tr>
+<tr>
+	<td>Insert</td>
+	<td>O(1)</td>
+	<td>O(m)</td>
+	<td>O(n/2)</td>
+</tr>
+<tr>
+	<td>Move</td>
+	<td>O(1)</td>
+	<td>O(m)</td>
+	<td>O(n/2)</td>
+</tr>
+<tr>
+	<td>Delete</td>
+	<td>O(1)</td>
+	<td>O(m)</td>
+	<td>O(n/2)</td>
+</tr>
+<tr>
+	<td>Ancestors</td>
+	<td>O(m)</td>
+	<td>O(m)</td>
+	<td>O(m)</td>
+</tr>
+<tr>
+	<td>Descendants</td>
+	<td>O(m)</td>
+	<td>O(m)</td>
+	<td>O(m)</td>
+</tr>
+</table>
 +++
 ### End of part 4
 ---
