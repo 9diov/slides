@@ -121,15 +121,6 @@ Parent
 ### Ancestors/Descendants
 Need to loop and send multiple queries, or...
 +++
-### Recursive CTE
-* Supported by:
-    * PostgreSQL 8.4 (2009)
-    * MySQL 8.0 (2017)
-    * Oracle 11g Release 2 (2009)
-    * SQL Server 2005 (2005)
-	* SQLite 3.8.3.1 (2014)
-	* IBM DB2 UDB 8 (2002)
-+++
 ### Get descendants (PostgreSQL)
 Get all descendants of X:
 
@@ -155,9 +146,43 @@ Get all descendants of X:
     ) select path from tree
     where id = 0
 +++
-### Performance
-* Insert/move/delete: fast
-* Get ancestors/descendants: acceptable (with recursive CTE)
+### Recursive CTE
+* Supported by:
+    * PostgreSQL 8.4 (2009)
+    * MySQL 8.0 (2017)
+    * Oracle 11g Release 2 (2009)
+    * SQL Server 2005 (2005)
+	* SQLite 3.8.3.1 (2014)
+	* IBM DB2 UDB 8 (2002)
++++
+<h3>Performance</h3>
+
+<table>
+<tr>
+	<th>Operation</th>
+	<th>Performance</th>
+</tr>
+<tr>
+	<td>Insert</td>
+	<td>O(1)</td>
+</tr>
+<tr>
+	<td>Move</td>
+	<td>O(1)</td>
+</tr>
+<tr>
+	<td>Delete</td>
+	<td>O(1)</td>
+</tr>
+<tr>
+	<td>Ancestors</td>
+	<td>O(m)</td>
+</tr>
+<tr>
+	<td>Descendants</td>
+	<td>O(m)</td>
+</tr>
+</table>
 +++
 ### When to use
 * A lot of mutations: Insert/move/delete
