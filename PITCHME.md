@@ -368,10 +368,18 @@ Combination of delete and insert.
 +++
 ### Query ancestors
 
+![](static/nested_set_tree.png)
++++
+### Query ancestors
+
 	select A.id, A.name from folder D
 	join folder A
 	on D.left between A.left and A.right
 	where D.id = <id>
++++
+### Query descendants
+
+![](static/nested_set_tree.png)
 +++
 ### Query descendants
 
