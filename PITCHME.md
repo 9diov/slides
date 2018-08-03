@@ -31,9 +31,21 @@ Data that has parent-child relationship such as
 * Can join together with other types of relational data
 +++
 ## Common strategies
-* Adjacency list
-* Closure table
-* Nested set
+Adjacency list
+
+![Adjacency list](static/adjacency_list_db_diagram.png)
++++
+## Common strategies
+Closure table
+
+![](static/closure_table_db_diagram.png)
++++
+## Common strategies
+Nested set
+
+![](static/nested_set_tree.png)
++++
+## Common strategies
 * Others (not discussed today)
 	* Materialized path/path enumeration
 	* Lineage column
