@@ -346,7 +346,7 @@ Rule: descendants' left and right numbers are between ancestor's numbers
 ![](static/nested_set_insert_2.png)
 +++
 ### Insert (cont)
-Insert under (id, left, right) of (4, 3, 4)
+Insert under parent (id, left, right) of (4, 3, 4)
 
 	update folder
 	set left =
