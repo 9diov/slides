@@ -39,6 +39,9 @@ Data that has parent-child relationship such as
 * Adjacency list
 * Closure table
 * Nested set
+* Others (not discussed today)
+	* Materialized path/path enumeration
+	* Lineage column
 +++
 ### End of part 1
 ---
@@ -47,6 +50,7 @@ Data that has parent-child relationship such as
 * @color[#D33682](Adjacency list)
 * Closure table
 * Nested set
+* Database specific implementations
 * Conclusion
 +++
 ### Part 2: Adjacency list
@@ -166,6 +170,7 @@ Get all descendants of X:
 * Adjacency list
 * @color[#D33682](Closure table)
 * Nested set
+* Database specific implementations
 * Conclusion
 +++
 ### Part 3: Closure table
@@ -279,6 +284,7 @@ Move `<id>` to under `<new_parent_id>`
 * Adjacency list
 * Closure table
 * @color[#D33682](Nested set)
+* Database specific implementations
 * Conclusion
 +++
 ### Part 4: Nested set
@@ -400,10 +406,44 @@ Nested Sets is a clever solution – maybe too clever. It also fails to support 
 * Adjacency list
 * Closure table
 * Nested set
+* @color[#D33682](Database specific implementations)
+* Conclusion
++++
+### Part 5: Database specific implementations
++++
+### PostgreSQL
+
+* Recursive CTE
+* [ltree](https://www.postgresql.org/docs/current/static/ltree.html) for materialized path
++++
+### MySQL
+
+* Recursive CTE (since 8.0)
+* If not supported, use [session variable](https://explainextended.com/2009/09/29/adjacency-list-vs-nested-sets-mysql/)
++++
+### Oracle
+
+* Use `CONNECT BY` for adjacency list
++++
+### SQL Server
+
+* Use recursive CTE for adjacency list
+* Use [HierarchyId](https://docs.microsoft.com/en-us/sql/t-sql/data-types/hierarchyid-data-type-method-reference?view=sql-server-2017) for lineage column
++++
+### End of part 5
+---
+### Agenda
+* Introduction
+* Adjacency list
+* Closure table
+* Nested set
+* Database specific implementations
 * @color[#D33682](Conclusion)
 +++
-+++
 ### Conclusion
+* Use adjacency list first
+* If not fast enough then try other approaches
+* Different strategies can be combined
 ---
 ### Questions?
 ---
