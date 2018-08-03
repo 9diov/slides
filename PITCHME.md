@@ -287,7 +287,7 @@ Move `<id>` to under `<new_parent_id>`
 ### Part 4: Nested set
 +++
 ### Structure
-* Extra 2 columns left and right
+* Extra 2 columns `left` and `right`
 * Rule: descendants' left and right numbers are between ancestor's numbers
 +++
 @snap[north-west diagram]
@@ -344,8 +344,18 @@ Move `<id>` to under `<new_parent_id>`
 ### Parent
 +++
 ### Query ancestors
+
+	select A.id, A.name from folder D
+	join folder A
+	on D.left between A.left and A.right
+	where D.id = <id>
 +++
 ### Query descendants
+
+	select C.id, C.name from folder A
+	join folder D
+	on D.left between A.left and A.right
+	where A.id = <id>
 +++
 ### Performance
 * Insert/move/delete: slow
@@ -353,6 +363,12 @@ Move `<id>` to under `<new_parent_id>`
 +++
 ### When to use
 * Relatively 
++++
+### Variants
+* Nested intervals:
+	* Use real/float instead of integer for `left` and `right` indexes
+* Matrix encoding:
+	
 +++
 ### End of part 4
 ---
@@ -363,11 +379,13 @@ Move `<id>` to under `<new_parent_id>`
 * Nested set
 * @color[#D33682](Conclusion)
 +++
++++
 ### Conclusion
 ---
-
 ### Questions?
 ---
+### Alternative to RDBMS
+* Neo4J
 References:
 
 
