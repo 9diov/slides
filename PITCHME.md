@@ -288,10 +288,6 @@ Extra 2 columns: `left` and `right`
 
 ![](static/nested_set.png)
 +++
-@snap[south-west diagram]
-Rule: descendants' left and right numbers are between ancestor's numbers
-@snapend
-
 @snap[north-west diagram]
 ![](static/tree_structure.png)
 @snapend
@@ -329,6 +325,10 @@ Rule: descendants' left and right numbers are between ancestor's numbers
     <td>8</td>
 </tr>
 </table>
+@snapend
+
+@snap[south-west diagram]
+Rule: descendants' left and right numbers are between ancestor's numbers
 @snapend
 +++
 ### Insert
