@@ -11,8 +11,8 @@ Hierarchical data in relational database
 +++
 ### Part 1: Introduction
 * What is hierarchical data?
-* Why stores in relational database?
-* Common ways to store hierarchical data in relational database
+* Why relational database?
+* Common strategies
 +++
 ### What is hierarchical data?
 Data that has parent-child relationship such as
@@ -26,14 +26,9 @@ Data that has parent-child relationship such as
 ### Forum post
 ![HN](static/hacker_news.png)
 +++
-### Why stores in relational database?
+### Why relational database?
 * No additional database needed
 * Can join together with other types of relational data
-+++
-### Operations
-* Insert/move/delete
-* Query parents/children
-* Query ancestors/descendants
 +++
 ## Common strategies
 * Adjacency list
@@ -328,6 +323,11 @@ m = depth of tree
 * Balanced, decently fast for all cases
 * Extra storage cost for the closure table is fine
 +++
+### Libraries
+* Rails: [closure_tree](https://github.com/ClosureTree/closure_tree)
+* Django: [django-closure-tree](https://github.com/funkybob/django-closure-tree)
+* Laravel: [ClosureTable](https://github.com/franzose/ClosureTable)
++++
 ### End of part 3
 ---
 ### Agenda
@@ -498,6 +498,11 @@ m = depth of tree
 * Nested intervals:
 	* Use real/float instead of integer for `left` and `right` indexes
 * [Matrix encoding](http://vadimtropashko.files.wordpress.com/2011/07/ch5.pdf)
++++
+### Libraries
+* Rails: [acts_as_tree](https://github.com/amerine/acts_as_tree)
+* Django: [django-mptt](https://github.com/django-mptt/django-mptt)
+* Laravel [laravel-nestedset](https://github.com/lazychaser/laravel-nestedset)
 +++
 ### Conclusion
 Nested Sets is a clever solution – maybe too clever. It also fails to support referential integrity. It’s best used when you need to query a tree more frequently than you need to modify the tree. - _SQL Antipatterns_
