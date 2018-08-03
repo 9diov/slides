@@ -422,7 +422,7 @@ Child is a descendant that does not have ancestor which is descendant of given n
 * [Matrix encoding](http://vadimtropashko.files.wordpress.com/2011/07/ch5.pdf)
 +++
 ### Conclusion
-Nested Sets is a clever solution – maybe too clever. It also fails to support referential integrity. It’s best used when you need to query a tree more frequently than you need to modify the tree. - SQL Antipatterns
+Nested Sets is a clever solution – maybe too clever. It also fails to support referential integrity. It’s best used when you need to query a tree more frequently than you need to modify the tree. - _SQL Antipatterns_
 +++
 ### End of part 4
 ---
@@ -444,7 +444,7 @@ Nested Sets is a clever solution – maybe too clever. It also fails to support 
 ### MySQL
 
 * Recursive CTE (since 8.0)
-* If not supported, use [session variable](https://explainextended.com/2009/09/29/adjacency-list-vs-nested-sets-mysql/)
+* If not supported, use [session variable](https://explainextended.com/2009/09/29/adjacency-list-vs-nested-sets-mysql/) and triggers.
 +++
 ### Oracle
 
@@ -454,6 +454,8 @@ Nested Sets is a clever solution – maybe too clever. It also fails to support 
 
 * Use recursive CTE for adjacency list
 * Use [HierarchyId](https://docs.microsoft.com/en-us/sql/t-sql/data-types/hierarchyid-data-type-method-reference?view=sql-server-2017) for lineage column
++++
+Discussion for adjacency list vs nested set for various types of databases can be found [here](https://explainextended.com/2009/09/24/adjacency-list-vs-nested-sets-postgresql/)
 +++
 ### End of part 5
 ---
@@ -467,13 +469,15 @@ Nested Sets is a clever solution – maybe too clever. It also fails to support 
 +++
 ### Conclusion
 * Use adjacency list first
+* If existing table cannot be modified use closure table with triggers
 * If not fast enough then try other approaches
 * Different strategies can be combined
+* If makes sense, use grapth databases such as Neo4J
 ---
 ### Questions?
 ---
-### Alternative to RDBMS
-* Neo4J
-References:
+### Other topics
+* Validation, cycle detection
+* Use of indexes
 
 
