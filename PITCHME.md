@@ -35,20 +35,19 @@ Adjacency list
 
 ![Adjacency list](static/adjacency_list_db_diagram.png)
 +++
-## Common strategies
+## Common strategies (cont.)
 Closure table
 
 ![](static/closure_table_db_diagram.png)
 +++
-## Common strategies
+## Common strategies (cont.)
 Nested set
 
 ![](static/nested_set_tree.png)
 +++
-## Common strategies
-* Others (not discussed today)
-	* Materialized path/path enumeration
-	* Lineage column
+## Common strategies (others)
+* Materialized path/path enumeration
+* Lineage column
 +++
 ### End of part 1
 ---
@@ -514,7 +513,7 @@ m = depth of tree
 ### Libraries
 * Rails: [acts_as_tree](https://github.com/amerine/acts_as_tree)
 * Django: [django-mptt](https://github.com/django-mptt/django-mptt)
-* Laravel [laravel-nestedset](https://github.com/lazychaser/laravel-nestedset)
+* Laravel: [laravel-nestedset](https://github.com/lazychaser/laravel-nestedset)
 +++
 ### Conclusion
 Nested Sets is a clever solution – maybe too clever. It also fails to support referential integrity. It’s best used when you need to query a tree more frequently than you need to modify the tree. - _SQL Antipatterns_
