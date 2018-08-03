@@ -55,6 +55,7 @@ Data that has parent-child relationship such as
 <h4>Structure</h4>
 <ul>
     <li>Each node has a pointer to its' parent</li>
+    <li>Storage cost: 1 extra column</li>
 </ul>
 @snapend
 
@@ -118,10 +119,12 @@ Need to loop and send multiple queries, or...
 +++
 ### Recursive CTE
 * Supported by:
-    * PostgreSQL 8.4
-    * MySQL 8.0
-    * Oracle 11g Release 2
-    * SQL Server 2005
+    * PostgreSQL 8.4 (2009)
+    * MySQL 8.0 (2017)
+    * Oracle 11g Release 2 (2009)
+    * SQL Server 2005 (2005)
+	* SQLite 3.8.3.1 (2014)
+	* IBM DB2 UDB 8 (2002)
 +++
 ### Get descendants (PostgreSQL)
 Get all descendants of X:
@@ -171,6 +174,7 @@ Get all descendants of X:
 * A separate table called "closure table" that stores all paths from each node to another
 * Each node also has a path to itself
 * Optional depth column
+* Storage cost: extra table
 +++
 ![](static/closure_table_db_diagram.png)
 +++
@@ -263,6 +267,14 @@ Move `<id>` to under `<new_parent_id>`
     from folder F left join closure C on ancestor_id = id
     order by C.depth
 +++
+### Performance
+* Insert/move/delete: fast but not as fast as adjacency list
+* Get ancestors/descendants: fast
++++
+### When to use
+* A lot of mutations: Insert/move/delete
+* Extra storage cost for the closure table is fine
++++
 ### End of part 3
 ---
 ### Agenda
@@ -273,6 +285,74 @@ Move `<id>` to under `<new_parent_id>`
 * Conclusion
 +++
 ### Part 4: Nested set
++++
+### Structure
+* Extra 2 columns left and right
+* Rule: descendants' left and right numbers are between ancestor's numbers
++++
+@snap[north-east diagram]
+![](static/nested_set.png)
+@snapend
+
+@snap[south-west diagram]
+![](static/directory_structure.png)
+@snapend
+
+@snap[south-east]
+<table>
+<tr>
+    <th>ID</th>
+    <th>Left</th>
+    <th>Right</th>
+</tr>
+<tr>
+    <td>1</td>
+    <td>1</td>
+    <td>10</td>
+</tr>
+<tr>
+    <td>2</td>
+    <td>2</td>
+    <td>5</td>
+</tr>
+<tr>
+    <td>3</td>
+    <td>3</td>
+    <td>4</td>
+</tr>
+<tr>
+    <td>4</td>
+    <td>6</td>
+    <td>9</td>
+</tr>
+<tr>
+    <td>5</td>
+    <td>7</td>
+    <td>8</td>
+</tr>
+</table>
+@snapend
++++
+### Insert
++++
+### Move
++++
+### Delete
++++
+### Children
++++
+### Parent
++++
+### Query ancestors
++++
+### Query descendants
++++
+### Performance
+* Insert/move/delete: slow
+* 
++++
+### When to use
+* Relatively 
 +++
 ### End of part 4
 ---
