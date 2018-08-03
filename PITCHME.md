@@ -180,8 +180,8 @@ Get all descendants of X:
 @snap[east]
 <table>
 <tr>
-    <th>Ancestor ID</th>
-    <th>Descendant ID</th>
+    <th>Ancestor</th>
+    <th>Descendant</th>
     <th>Depth</th>
 </tr>
 <tr>
