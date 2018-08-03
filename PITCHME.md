@@ -287,18 +287,18 @@ Move `<id>` to under `<new_parent_id>`
 ### Part 4: Nested set
 +++
 ### Structure
-* Extra 2 columns `left` and `right`
-* Rule: descendants' left and right numbers are between ancestor's numbers
+* Extra 2 columns: `left` and `right`
+![](static/nested_set.png)
 +++
 @snap[north-west diagram]
-![](static/nested_set.png)
+* Rule: descendants' left and right numbers are between ancestor's numbers
 @snapend
 
 @snap[south-west diagram]
 ![](static/directory_structure.png)
 @snapend
 
-@snap[north-east]
+@snap[south-east]
 <table>
 <tr>
     <th>ID</th>
