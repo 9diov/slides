@@ -182,37 +182,45 @@ Get all descendants of X:
 <tr>
     <th>Ancestor ID</th>
     <th>Descendant ID</th>
+    <th>Depth</th>
 </tr>
 <tr>
     <td>1</td>
     <td>2</td>
+    <td>1</td>
 </tr>
 <tr>
     <td>1</td>
     <td>3</td>
+    <td>1</td>
 </tr>
 <tr>
     <td>1</td>
     <td>4</td>
+    <td>2</td>
 </tr>
 <tr>
     <td>1</td>
     <td>5</td>
+    <td>2</td>
 </tr>
 <tr>
     <td>2</td>
     <td>4</td>
+    <td>1</td>
 </tr>
 <tr>
     <td>3</td>
     <td>5</td>
+    <td>1</td>
 </tr>
 </table>
 @snapend
 +++
 ### Insert
 
-    insert into folder (id, name); -> <id>
+    insert into folder (id, name);
+
     insert into closure (ancestor_id, descendant_id, depth)
     select ancestor_id, <id>, depth + 1 from closure
     where descendant_id = <parent_id>;
