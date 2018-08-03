@@ -388,21 +388,38 @@ Combination of delete and insert.
 	on D.left between A.left and A.right
 	where A.id = <id>
 +++
-### Children
-+++
 ### Parent
+Parent is an ancestor that does not have descendant which is ancestor of given node
+
+	select A.id, A.name from folders D
+	join folders A
+	on D.left between A.left and A.right
+	left outer join folders B
+	on D.left betwen B.left and B.right and B.left between A.left and A.right
+	where D.id = <id> and B.id IS NULL
++++
+### Children
+Child is a descendant that does not have ancestor which is descendant of given node
+
+	select D.id, D.name from folders A
+	join folders D
+	on D.left between A.left and A.right
+	left outer join folders B
+	on D.left betwen B.left and B.right and B.left between A.left and A.right
+	where A.id = <id> and B.id IS NULL
 +++
 ### Performance
-* Insert/move/delete: slow
-* 
+* Insert/move/delete: slow - O(n/2)
+* Fast ancestors/descendants
 +++
 ### When to use
-* Relatively 
+* Very few mutations (insert/move/delete)
+* A lot of ancestors/descendants queries
 +++
 ### Variants
 * Nested intervals:
 	* Use real/float instead of integer for `left` and `right` indexes
-* Matrix encoding:
+* [Matrix encoding](http://vadimtropashko.files.wordpress.com/2011/07/ch5.pdf)
 +++
 ### Conclusion
 Nested Sets is a clever solution – maybe too clever. It also fails to support referential integrity. It’s best used when you need to query a tree more frequently than you need to modify the tree. - SQL Antipatterns
