@@ -1,5 +1,5 @@
 ---
-Hierarchical data in relational database
+Hierarchical Data in Relational Database
 ---
 ### Agenda
 * @color[#D33682](Introduction)
