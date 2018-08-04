@@ -26,6 +26,9 @@ Data that has parent-child relationship such as
 ### Forum post
 ![HN](static/hacker_news.png)
 +++
+### Tinhte.vn
+![](static/tinhte.png)
++++
 ### @Holilstics
 Folder structure
 ![](static/holistics_browse.png)
