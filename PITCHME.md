@@ -26,6 +26,13 @@ Data that has parent-child relationship such as
 ### Forum post
 ![HN](static/hacker_news.png)
 +++
+### @Holilstics
+Folder structure
+![](static/holistics_browse.png)
+## @Holistics
+Search
+![](static/holistics_search.png)
++++
 ### Why relational database?
 * No additional database needed
 * Can join together with other types of relational data
@@ -195,6 +202,10 @@ m = depth of tree
 ### When to use
 * A lot of mutations: Insert/move/delete
 * Database supports recursive CTE
++++
+### @Holistics
+* Show directory tree (with permission checking)
+* Search reports/dashboards
 +++
 ### End of part 2
 ---
