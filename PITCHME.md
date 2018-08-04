@@ -237,6 +237,9 @@ m = depth of tree
 +++
 ### End of part 2
 ---
+### Quiz
+![](IMG_4962.JPG)
+---
 ### Agenda
 * Introduction
 * Adjacency list
@@ -598,6 +601,9 @@ Nested Sets is a clever solution – maybe too clever. It also fails to support 
 </table>
 +++
 ### End of part 4
+---
+### Quiz
+![](IMG_4964.JPG)
 ---
 ### Agenda
 * Introduction
