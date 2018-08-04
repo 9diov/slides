@@ -238,7 +238,7 @@ m = depth of tree
 ### End of part 2
 ---
 ### Quiz
-![](IMG_4962.JPG)
+![](static/IMG_4962.JPG)
 ---
 ### Agenda
 * Introduction
@@ -603,7 +603,7 @@ Nested Sets is a clever solution – maybe too clever. It also fails to support 
 ### End of part 4
 ---
 ### Quiz
-![](IMG_4964.JPG)
+![](static/IMG_4964.JPG)
 ---
 ### Agenda
 * Introduction
