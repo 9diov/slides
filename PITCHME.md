@@ -136,8 +136,32 @@ Parent
 
     select id from folder where id = X.parent_id
 +++
-### Ancestors/Descendants
-Need to loop and send multiple queries (N + 1 problem), or...
+### Ancestors
+
+    class Folder < ActiveRecord::Base
+      has_one :parent
+    end
+    
+    class Report < ActiveRecord::Base
+      has_one :parent_folder
+    end
++++
+### Ancestors (cont.)
+Need to loop and send multiple queries (N + 1 problem)
+
+    def ancestors(report)
+      return [] unless report.folder.present?
+      folder = report.folder
+      while folder.present?
+        res << folder
+        folder = folder.parent
+      end
+      res.reverse
+    end
++++
+### Ancestors (cont.)
+
+Or...
 +++
 ### Get descendants (PostgreSQL)
 Get all descendants of X:
