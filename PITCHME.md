@@ -163,18 +163,6 @@ Need to loop and send multiple queries (N + 1 problem)
 
 Or...
 +++
-### Get descendants (PostgreSQL)
-Get all descendants of X:
-
-    with recursive tree (id) as (
-      select F.id from folder F
-      where F.parent_id = X.id
-      union
-      select F.id from folder F, tree T
-      where F.parent_id = T.id
-    )
-    select * from tree;
-+++
 ### Get ancestors (PostgreSQL)
 
     with recursive tree (id, path) as (
@@ -187,6 +175,18 @@ Get all descendants of X:
       join tree on tree.id = C.id
     ) select path from tree
     where id = 0
++++
+### Get descendants (PostgreSQL)
+Get all descendants of X:
+
+    with recursive tree (id) as (
+      select F.id from folder F
+      where F.parent_id = X.id
+      union
+      select F.id from folder F, tree T
+      where F.parent_id = T.id
+    )
+    select * from tree;
 +++
 ### Recursive CTE
 * Supported by:
